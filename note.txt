@@ -1,0 +1,80 @@
+// Expanded(
+                //   child: FutureBuilder<List<CategoryModel>>(
+                //     future: fetchDataCategoryModel(),
+                //     builder: (context, snapshot) {
+                //       if (snapshot.connectionState == ConnectionState.waiting) {
+                //         return Center(child: CustomLoadingWidget1());
+                //       } else if (snapshot.hasError) {
+                //         return Text('Error: ${snapshot.error}');
+                //       } else if (snapshot.data == null) {
+                //         return const Text('Data is null');
+                //       } else {
+                //         category = snapshot.data!;
+                //         displayList = List.from(category);
+                //         return Padding(
+                //           padding: EdgeInsets.all(screenWidth * 0.04), // 4% of the screen width
+                //           child: GridView.builder(
+                //             gridDelegate:
+                //                 SliverGridDelegateWithFixedCrossAxisCount(
+                //               crossAxisCount: 3,
+                //               childAspectRatio: 0.7,
+                //               mainAxisSpacing: screenWidth * 0.02, // 2% of the screen width
+                //               crossAxisSpacing: screenWidth * 0.01, // 1% of the screen width
+                //             ),
+                //             itemCount: displayList.length,
+                //             itemBuilder: (context, index) {
+                //               return Card(
+                //                 color: const Color.fromARGB(255, 51, 51, 51),
+                //                 elevation: 2,
+                //                 shape: RoundedRectangleBorder(
+                //                   borderRadius:
+                //                       BorderRadius.circular(screenWidth * 0.05), // 5% of the screen width
+                //                   side: BorderSide(
+                //                     width: screenWidth * 0.01, // 1% of the screen width
+                //                     color: Color.fromARGB(255, 225, 219, 219),
+                //                   ),
+                //                 ),
+                //                 child: GridTile(
+                //                   child: Column(
+                //                     children: [
+                //                       AspectRatio(
+                //                         aspectRatio: 7 / 8,
+                //                         child: ClipRRect(
+                //                           borderRadius: BorderRadius.only(
+                //                             topLeft: Radius.circular(screenWidth * 0.05), // 5% of the screen width
+                //                             topRight: Radius.circular(screenWidth * 0.05), // 5% of the screen width
+                //                           ),
+                //                           child: Image.network(
+                //                             "http://143.198.217.4:1026/api/storage/${displayList[index].image}",
+                //                             fit: BoxFit.cover,
+                //                           ),
+                //                         ),
+                //                       ),
+                //                       Padding(
+                //                         padding: const EdgeInsets.only(top: 4),
+                //                         child: Center(
+                //                           child: Text(
+                //                             displayList[index].name,
+                //                             style: const TextStyle(
+                //                               color: Color.fromARGB(255, 198, 150, 27),
+                //                               fontSize: 12,
+                //                               fontWeight: FontWeight.w500,
+                //                             ),
+                //                           ),
+                //                         ),
+                //                       ),
+                //                     ],
+                //                   ),
+                //                 ),
+                //               );
+                //             },
+                //           ),
+                //         );
+                //       }
+                //     },
+                //   ),
+                // ),
+                use share preference to store data in local then catch exeption
+
+                // pagination 
+                use append to store data
