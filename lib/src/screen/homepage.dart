@@ -69,6 +69,7 @@ class _HomePageState extends State<HomePage> {
   Future<int> _getUserId() async {
     final prefs = await SharedPreferences.getInstance();
     final storedId = prefs.getString('id') ?? '0';
+     print('Stored User ID: $storedId');
     return int.tryParse(storedId) ?? 0;
   }
 

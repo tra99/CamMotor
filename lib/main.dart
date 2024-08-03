@@ -2,9 +2,11 @@ import 'package:cammotor_new_version/src/model/property.dart';
 import 'package:cammotor_new_version/src/providers/pagination.dart';
 import 'package:cammotor_new_version/src/providers/real_product.dart';
 import 'package:cammotor_new_version/src/providers/sub_categ.dart';
+import 'package:cammotor_new_version/src/providers/user.dart';
 import 'package:cammotor_new_version/src/screen/authentication/login.dart';
 import 'package:cammotor_new_version/src/screen/bucket/provider/basket_provider.dart';
 import 'package:cammotor_new_version/src/services/property.dart';
+import 'package:cammotor_new_version/src/tests/t2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
@@ -39,6 +41,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SubCategoryProvider()),
         ChangeNotifierProvider(create: (_) => RealProductProvider()),
         ChangeNotifierProvider(create: (_) => BasketProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: MyApp(token: token, showIntroScreen: showIntroScreen),
     ),
@@ -67,7 +71,7 @@ class MyApp extends StatelessWidget {
       // home: isLoggedIn ? const HomePage() : (showIntroScreen ?  const SplashPage() : const LoginScreen()),
       // home: RealProduct(subcategoryID: 13,),
       // home:  ProfileInfoScreen(),
-      home:  SplashPage(),
+      home:  HomePage(),
       debugShowCheckedModeBanner: false,
     );
   }

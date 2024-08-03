@@ -12,6 +12,8 @@ import '../bucket/basket_notifier.dart';
 import '../bucket/bucket_screen.dart';
 import 'package:http/http.dart' as http;
 
+import '../bucket/provider/basket_provider.dart';
+
 class RealProduct extends StatefulWidget {
   final int subcategoryID;
 
@@ -80,9 +82,7 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
     await prefs.setStringList('basketItems', basketItems);
     await _loadBasketCount();
   }
-
-
-
+  
   Future<void> _loadBasketCount() async {
     final prefs = await SharedPreferences.getInstance();
     final basketItems = prefs.getStringList('basketItems') ?? [];
@@ -93,9 +93,8 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
       totalCount += decodedItem['quantity'] as int;
     }
 
-    setState(() {
-      basketCount = totalCount;
-    });
+    final basketProvider = Provider.of<BasketProvider>(context, listen: false);
+    basketProvider.setBasketCount(totalCount);
   }
   
   @override
@@ -154,7 +153,7 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => BasketPage()),
+                  MaterialPageRoute(builder: (context) => const BasketPage()),
                 );
               },
               child: Stack(
@@ -164,9 +163,10 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
                     Icons.shopping_cart,
                     size: 30,
                   ),
-                  ValueListenableBuilder<int>(
-                    valueListenable: BasketNotifier.basketCount,
-                    builder: (context, basketCount, child) {
+                  StreamBuilder<int>(
+                    stream: Provider.of<BasketProvider>(context).basketCountStream,
+                    builder: (context, snapshot) {
+                      final basketCount = snapshot.data ?? 0;
                       return basketCount > 0
                           ? Positioned(
                               right: 0,

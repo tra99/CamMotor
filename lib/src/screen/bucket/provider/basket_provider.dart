@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -77,5 +79,31 @@ class BasketProvider with ChangeNotifier {
       }
     }
     return total;
+  }
+
+  final _basketCountController = StreamController<int>.broadcast();
+  int _basketCount = 0;
+
+  Stream<int> get basketCountStream => _basketCountController.stream;
+
+  void incrementBasketCount() {
+    _basketCount++;
+    _basketCountController.sink.add(_basketCount);
+  }
+
+  void decrementBasketCount() {
+    if (_basketCount > 0) {
+      _basketCount--;
+      _basketCountController.sink.add(_basketCount);
+    }
+  }
+
+  void setBasketCount(int count) {
+    _basketCount = count;
+    _basketCountController.sink.add(_basketCount);
+  }
+
+  void dispose() {
+    _basketCountController.close();
   }
 }
