@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 class OrderCard extends StatefulWidget {
   final Map<String, dynamic> order;
 
-  const OrderCard({Key? key, required this.order}) : super(key: key);
+  const OrderCard({super.key, required this.order});
 
   @override
   _OrderCardState createState() => _OrderCardState();
@@ -52,7 +52,6 @@ class _OrderCardState extends State<OrderCard> {
         },
         body: jsonEncode({
           'orderID': orderId,
-          'sortOrder': 'desc' 
         }),
       );
 

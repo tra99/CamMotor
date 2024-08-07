@@ -1,20 +1,20 @@
-import 'package:cammotor_new_version/src/screen/authentication/login.dart';
 import 'package:cammotor_new_version/src/screen/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart' as cs;
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../components/card/card_custom.dart';
 import '../providers/bottom_sheet.dart';
 import '../services/store_basket.dart';
+import 'authentication/logic/logout.dart';
 import 'order_history/order_list.dart';
 
 class HomePage extends StatefulWidget {
   final Uint8List? image;
   final String? serverImage;
-  const HomePage({Key? key, this.image, this.serverImage}) : super(key: key);
+  const HomePage({super.key, this.image, this.serverImage});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
       return MemoryImage(image);
     } else if (serverImage != null) {
       return NetworkImage(
-        "${dotenv.env['BASE_URL']}/storage/$serverImage" ?? "https://icon-library.com/images/no-profile-pic-icon/no-profile-pic-icon-7.jpg",
+        "${dotenv.env['BASE_URL']}/storage/$serverImage",
       );
 
     } else {
@@ -232,7 +232,7 @@ class _HomePageState extends State<HomePage> {
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data == 0) {
-          return const Center(child: Text('User ID not found'));
+          return const Center(child: Text('សូមចូលទៅកាន់គេហទំព័រទំនិញនិងត្រឡប់មកម្តងទៀត'));
         } else {
           final userId = snapshot.data!;
           return FutureBuilder<List<Map<String, dynamic>>>(
@@ -243,7 +243,7 @@ class _HomePageState extends State<HomePage> {
               } else if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text('No orders found'));
+                return const Center(child: Text('មិនមានបញ្ជាទិញ'));
               } else {
                 final orders = snapshot.data!;
                 return ListView.builder(
@@ -283,7 +283,7 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(50),
                     border: Border.all(width: 2, color: Colors.yellow)),
                 child: ClipOval(
-                  child: Image.asset('assets/images/f1.jpg',
+                  child: Image.asset('assets/images/profile.jpg',
                       fit: BoxFit.cover),
                 ),
               ),
@@ -483,7 +483,7 @@ class _HomePageState extends State<HomePage> {
               ),
                ListTile(
                 onTap: () async{
-                  await _logout(context);
+                  await logout(context);
                 },
                 leading: const CircleAvatar(
                     backgroundColor: Color.fromARGB(255, 255, 172, 62),
@@ -640,112 +640,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-// for card grid 4 items in home screen
-class choices {
-  const choices({required this.name, required this.image});
-  final String name;
-  final ImageProvider image;
-}
-
-class SelectCard extends StatelessWidget {
-  const SelectCard({Key? key, required this.ch}) : super(key: key);
-  final choices ch;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Colors.grey.shade300,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image(image: ch.image, width: 80),
-            Text(
-              ch.name,
-              style: const TextStyle(
-                color: Color.fromARGB(255, 105, 114, 106),
-                fontSize: 18,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-Future<void> _logout(BuildContext context) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  final token = prefs.getString('token');
-
-  if (token != null) {
-    try {
-      final response = await http.post(
-        Uri.parse('${dotenv.env['BASE_URL']}/auth/logout'),
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        await prefs.remove('token');
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
-        );
-      } else {
-        print('Failed to logout from the server: ${response.statusCode}');
-      }
-    } catch (error) {
-      print('Error during logout request: $error');
-    }
-  }
-}
-
-
-
-
-class choice {
-  const choice({required this.name, required this.image});
-  final String name;
-  final ImageProvider image;
-}
-
-class SelectCardPopup extends StatelessWidget {
-  const SelectCardPopup({Key? key, required this.chs}) : super(key: key);
-  final choices chs;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(children: [
-      Card(
-        color: Colors.grey.shade300,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                chs.name,
-                style: const TextStyle(
-                  color: Color.fromARGB(255, 105, 114, 106),
-                  fontSize: 18,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      Positioned(
-        top: -20,
-        right: -20,
-        child: Image(
-          image: chs.image,
-          width: 100,
-        ),
-      )
-    ]);
-  }
-  
-}
-

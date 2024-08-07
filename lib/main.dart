@@ -71,7 +71,7 @@ class MyApp extends StatelessWidget {
       // home: isLoggedIn ? const HomePage() : (showIntroScreen ?  const SplashPage() : const LoginScreen()),
       // home: RealProduct(subcategoryID: 13,),
       // home:  ProfileInfoScreen(),
-      home:  HomePage(),
+      home:  const SplashPage(),
       debugShowCheckedModeBanner: false,
     );
   }
