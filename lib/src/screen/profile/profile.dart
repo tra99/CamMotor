@@ -58,15 +58,6 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
     super.dispose();
   }
 
-  DateTime? _selectedDate;
-
-  void _clearDate() {
-    setState(() {
-      _selectedDate = null;
-      _controller4.clear();
-    });
-  }
-
   Future<void> fetchUserInfo() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? authToken = prefs.getString('token');
@@ -102,20 +93,19 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
           _serverImage = responseData['test']['profile'] ?? '';
         });
 
-        // Save the id to SharedPreferences as a String
         await prefs.setString('id', responseData['test']['id'].toString());
 
-        print(responseData);
+        // print(responseData);
       } else if (response.statusCode == 401) {
-        print('Unauthorized. Redirecting to login.');
+        // print('Unauthorized. Redirecting to login.');
       } else {
-        print('Failed to fetch user info: ${response.statusCode}');
+        // print('Failed to fetch user info: ${response.statusCode}');
       }
     } catch (e) {
-      print('Exception caught: $e');
+      // print('Exception caught: $e');
     }
   } else {
-    print('Authentication token not found');
+    // print('Authentication token not found');
   }
 }
 
@@ -138,30 +128,16 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
         if (response.statusCode == 200) {
           await prefs.remove('token');
           Navigator.pushReplacement(
+            // ignore: use_build_context_synchronously
             context,
             MaterialPageRoute(builder: (context) => const LoginScreen()),
           );
         } else {
-          print('Failed to logout from the server: ${response.statusCode}');
+          // print('Failed to logout from the server: ${response.statusCode}');
         }
       } catch (error) {
-        print('Error during logout request: $error');
+        // print('Error during logout request: $error');
       }
-    }
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate ?? DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-    );
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-        _controller4.text = '${picked.year}-${picked.month}-${picked.day}';
-      });
     }
   }
 
@@ -200,13 +176,13 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
         request.fields['dateOfBirth'] = _controller4.text;
 
         // Log the request data
-        print('Request URL: ${request.url}');
-        print('Request Headers: ${request.headers}');
-        print('Request Fields: ${request.fields}');
+        // print('Request URL: ${request.url}');
+        // print('Request Headers: ${request.headers}');
+        // print('Request Fields: ${request.fields}');
         if (_image != null) {
-          print('Image is being uploaded');
+          // print('Image is being uploaded');
         } else {
-          print('No image to upload');
+          // print('No image to upload');
         }
 
         try {
@@ -229,27 +205,27 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
 
             await prefs.setString('name', name ?? '');
             await prefs.setString('email', email ?? '');
-            await prefs.setString('telephone', telephone ?? '');
+            await prefs.setString('telephone', telephone);
             await prefs.setInt('main_balance', main_balance ?? 0); 
-            await prefs.setString('dateOfBirth', dateOfBirth ?? '');
+            await prefs.setString('dateOfBirth', dateOfBirth);
             if (_image != null) {
               await prefs.setString('profile', 'profile.png');
             }
 
-            print('Updated user data: {id: $id, name: $name, email: $email, telephone: $telephone, main_balance: $main_balance, dateOfBirth: $dateOfBirth, profile: $profile}');
+            // print('Updated user data: {id: $id, name: $name, email: $email, telephone: $telephone, main_balance: $main_balance, dateOfBirth: $dateOfBirth, profile: $profile}');
           } else {
-            print('Failed to update profile. Status code: ${response.statusCode}');
-            final responseBody = await response.stream.bytesToString();
-            print('Response body: $responseBody');
+            // print('Failed to update profile. Status code: ${response.statusCode}');
+            // final responseBody = await response.stream.bytesToString();
+            // print('Response body: $responseBody');
           }
         } catch (error) {
-          print('Error updating profile: $error');
+          // print('Error updating profile: $error');
         }
       } else {
-        print('Mismatch in user IDs or null ID');
+        // print('Mismatch in user IDs or null ID');
       }
     } else {
-      print('Authentication token not found');
+      // print('Authentication token not found');
     }
   }
 
@@ -267,8 +243,10 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        scrolledUnderElevation: 0,
         title: const Text(
-          'My Profile',
+          'ប្រវត្តិរូបរបស់អ្នកប្រើប្រាស់',
           style: TextStyle(
             fontWeight: FontWeight.w700,
           ),
@@ -279,7 +257,7 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
             onPressed: () {
               updateProfileInfo();
             },
-            child: const Text("Save"),
+            child:  const Text("កែប្រែ",style: TextStyle(color: Colors.red,fontSize: 18,fontWeight: FontWeight.w700),),
           )
         ],
       ),
@@ -311,78 +289,45 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
                   ),               
                 ],
               ),
-              Text(
-                '$name',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              Text('$email'),
               
               const SizedBox(
                 height: 25,
               ),
               CustomCard(
-                onTap: () {},
-                controller: _controller2,
-                initialText: 'Email: $email',
+                labelText: 'ឈ្មោះអ្នកប្រើប្រាស់',
+                initialText: '$name',
               ),
-              const SizedBox(height: 6),
-              CustomCard(
-                onTap: () {},
-                controller: _controller7,
-                initialText: 'Balance: $main_balance',
+              const Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Divider(),
               ),
               CustomCard(
-                onTap: () {},
-                controller: _controller1,
-                initialText: 'Name: $name',
+                labelText: 'អ៊ីម៉ែល',
+                initialText: '$email',
               ),
-              const SizedBox(height: 6),
+              const Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Divider(),
+              ),
               CustomCard(
-                onTap: () {},
-                controller: _controller5,
-                initialText: 'Type UserID: $type_userID',
+                labelText: 'លេខទូរស័ព្ទ',
+                initialText: '$name',
               ),
-              const SizedBox(height: 6),
+              const Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Divider(),
+              ),
               CustomCard(
-                onTap: () => _selectDate(context),
-                onClear: _clearDate,
-                controller: _controller4,
-                labelText: 'Date of Birth',
-                icon: Icons.calendar_today,
-                clearIcon: Icons.clear,
+                labelText: 'ថ្ងៃខែឆ្នាំកំណើត',
+                initialText: '$name',
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(height: 100,),
               SizedBox(
                 width: 200,
+                height: 60,
                 child: TextButton(
                   autofocus: true,
                   onPressed: () async {
-                    final result = await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('ការជូនដំណឹង'),
-                          content: const Text('តើអ្នកពិតជាចង់ចេញពីគណនីរបស់អ្នក?'),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('លុបចោល'),
-                            ),
-                            TextButton(
-                              onPressed: () async {
-                                await _logout(context);
-                              },
-                              child: const Text('ចាកចេញ'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
                   },
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.white,
@@ -460,97 +405,30 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
   }
 }
 
-class CustomCard extends StatefulWidget {
-  final VoidCallback onTap;
-  final TextEditingController controller;
-  final String? initialText;
-  final String? labelText;
+class CustomCard extends StatelessWidget {
+  final String initialText;
+  final String labelText;
   final IconData? icon;
   final IconData? clearIcon;
   final VoidCallback? onClear;
-
-  const CustomCard({
-    required this.onTap,
-    required this.controller,
-    this.initialText,
-    this.labelText,
-    this.icon,
-    this.clearIcon,
-    this.onClear,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  _CustomCardState createState() => _CustomCardState();
-}
-
-class _CustomCardState extends State<CustomCard> {
-  bool _isTextEmpty = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _isTextEmpty = widget.controller.text.isEmpty;
-    widget.controller.addListener(_handleTextChanged);
-  }
-
-  @override
-  void dispose() {
-    widget.controller.removeListener(_handleTextChanged);
-    super.dispose();
-  }
-
-  void _handleTextChanged() {
-    setState(() {
-      _isTextEmpty = widget.controller.text.isEmpty;
-    });
-  }
+  const CustomCard({super.key,required this.initialText,required this.labelText, this.icon, this.clearIcon, this.onClear});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: widget.onTap,
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        elevation: 3,
-        child: Stack(
-          children: [
-            ListTile(
-              leading: widget.icon != null ? Icon(widget.icon) : null,
-              title: TextField(
-                controller: widget.controller,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  labelText: widget.labelText,
-                  suffixIcon: widget.clearIcon != null && widget.onClear != null
-                      ? IconButton(
-                          icon: Icon(widget.clearIcon),
-                          onPressed: widget.onClear,
-                        )
-                      : null,
-                ),
-              ),
-            ),
-            if (_isTextEmpty && widget.initialText != null)
-              Positioned(
-                left: widget.icon != null ? 40.0 : 16.0,
-                top: 16.0,
-                child: Text(
-                  widget.initialText!,
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 16.0,
-                  ),
-                ),
-              ),
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(labelText,style: const TextStyle(color: Colors.grey,fontWeight: FontWeight.w500,fontSize: 16),),
+          Row(
+            children: [
+              Text(initialText,style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w500),),
+              Icon(icon)
+            ],
+          )
+        ],
       ),
     );
   }
 }
-
-
-

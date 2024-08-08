@@ -8,7 +8,7 @@ import '../intro_screen/intro1.dart';
 
 class SplashPage extends StatefulWidget {
   // final VoidCallback onFinish;
-  const SplashPage({Key? key, }) : super(key: key);
+  const SplashPage({super.key, });
 
   @override
   _SplashPageState createState() => _SplashPageState();
@@ -31,10 +31,10 @@ class _SplashPageState extends State<SplashPage> {
 
     if (token != null && token.isNotEmpty) {
       // User is logged in, navigate to HomePage
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
     } else {
       // User is not logged in, navigate to LoginScreen
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
     }
   }
 
