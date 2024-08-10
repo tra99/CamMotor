@@ -2,8 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
-class OrderCard extends StatefulWidget {
+class OrderCard extends StatefulWidget { 
   final Map<String, dynamic> order;
 
   const OrderCard({super.key, required this.order});
@@ -85,76 +86,79 @@ class _OrderCardState extends State<OrderCard> {
     int totalQuantity = getTotalQuantity(); 
     double totalPrice = getTotalPrice();    
 
-    return Card(
-      color: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    return RefreshIndicator(
+      onRefresh: _fetchOrderItems,
+      child: Card(
+        color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Image.asset(
+                            "assets/images/logo01.png",
+                            width: 100,
+                            height: 50,
+                          ),
+                          const SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Cammotor (24H)",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w800, fontSize: 16),
+                              ),
+                              Text(DateFormat('dd.MM.yyyy hh:mm a').format(DateTime.parse(widget.order['created_at']))),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const Icon(Icons.arrow_right_sharp),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        Image.asset(
-                          "assets/images/logo01.png",
-                          width: 100,
-                          height: 50,
-                        ),
-                        const SizedBox(width: 10),
-                        Column(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: orderItems.reversed.map((item) {
+                        return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              "Cammotor (24H)",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w800, fontSize: 16),
-                            ),
-                            Text("${widget.order['created_at']}"),
+                            Text('ឈ្មោះទំនិញ: ${item['name']}'),
                           ],
+                        );
+                      }).toList(),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("ចំនួនសរុប x $totalQuantity"),
+                        Text("តម្លៃសរុប: \$${totalPrice.toStringAsFixed(2)}"),
+                        const Text(
+                          "ការកម្មង់បានបញ្ចប់",
+                          style: TextStyle(fontSize: 18, color: Colors.grey),
                         ),
                       ],
                     ),
                   ],
                 ),
-                const Icon(Icons.arrow_right_sharp),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: orderItems.map((item) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('ឈ្មោះទំនិញ: ${item['name']}'),
-                        ],
-                      );
-                    }).toList(),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("ចំនួនសរុប x $totalQuantity"),
-                      Text("តម្លៃសរុប: \$${totalPrice.toStringAsFixed(2)}"),
-                      const Text(
-                        "ការកម្មង់បានបញ្ចប់",
-                        style: TextStyle(fontSize: 18, color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

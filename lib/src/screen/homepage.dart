@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:cammotor_new_version/src/screen/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart' as cs;
@@ -73,8 +75,11 @@ class _HomePageState extends State<HomePage> {
     return int.tryParse(storedId) ?? 0;
   }
 
+
+
   @override
   void initState() {
+    fetchUserInfo();
     super.initState();
 
     _widgetOptions = <Widget>[
@@ -193,11 +198,29 @@ class _HomePageState extends State<HomePage> {
                             key: ValueKey(index),
                             ch: ch[index],
                           ),
+                          // if (index == 3)
+                          //   Positioned(
+                          //     top: 5,
+                          //     right: 40,
+                          //     child: Image.asset("assets/images/sale.png"),
+                          //   ),
+                          if (index == 0)
+                            Positioned(
+                              top: 5,
+                              right: 20,
+                              child: Image.asset('assets/images/warning.png',width: 40,),
+                            ),
+                          if (index == 1)
+                            Positioned(
+                              top: 5,
+                              right: 20,
+                              child: Image.asset('assets/images/warning.png',width: 40,),
+                            ),
                           if (index == 3)
                             Positioned(
                               top: 5,
-                              right: 40,
-                              child: Image.asset("assets/images/sale.png"),
+                              right: 20,
+                              child: Image.asset('assets/images/warning.png',width: 40,),
                             ),
                         ],
                       ),
@@ -208,6 +231,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
+
         Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -258,249 +282,258 @@ class _HomePageState extends State<HomePage> {
         }
       },
     ),
-      const Column(
-        children: [
-          Text("Bonjour"),
-          Text("Bonjour"),
-        ],
-      ),
-      const Column(
-        children: [
-          Text("Bonjour"),
-          Text("Bonjour"),
-        ],
-      ),
-      SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                height: 100,
-                width: 100,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    border: Border.all(width: 2, color: Colors.yellow)),
-                child: ClipOval(
-                  child: Image.asset('assets/images/profile.jpg',
-                      fit: BoxFit.cover),
-                ),
-              ),
-              const Text(
-                'Username',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 20,
-                ),
-              ),
-              Container(
-                width: double.infinity,
-                height: 60,
-                color: const Color.fromARGB(255, 218, 215, 215),
-                child: const Padding(
-                  padding: EdgeInsets.only(left: 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Center(
-                        child: Text(
-                          'General information',
-                          style: TextStyle(
-                              color: Color.fromARGB(255, 45, 26, 248),
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Color.fromARGB(255, 0, 0, 255),
-                  child: Icon(
-                    Icons.attach_money_outlined,
-                    color: Colors.white,
-                  ),
-                ),
-                title: Text(
-                  'Top up all service',
-                  style: TextStyle(
-                    fontSize:18,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                trailing: Icon(
-                  Icons.arrow_right,
-                ),
-              ),
-              const ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Color.fromARGB(255, 214, 33, 33),
-                  child: Icon(
-                    Icons.balance_outlined,
-                    color: Colors.white,
-                  ),
-                ),
-                title: Text('Show main balance',style: TextStyle(
-                    fontSize:18,
-                    fontWeight: FontWeight.w500,
-                  ),),
-                trailing: Icon(
-                  Icons.arrow_right,
-                ),
-              ),
-              const ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Color.fromARGB(255, 33, 214, 73),
-                  child: Icon(
-                    Icons.money_off_outlined,
-                    color: Colors.white,
-                  ),
-                ),
-                title: Text('Credit card',style: TextStyle(
-                    fontSize:18,
-                    fontWeight: FontWeight.w500,
-                  ),),
-                trailing: Icon(Icons.arrow_right),
-              ),
-              const ListTile(
-                leading: CircleAvatar(
-                    backgroundColor: Color.fromARGB(255, 255, 172, 62),
-                    child: Icon(
-                      Icons.monetization_on_outlined,
-                      color: Colors.white,
-                    )),
-                title: Text('Payment history',style: TextStyle(
-                    fontSize:18,
-                    fontWeight: FontWeight.w500,
-                  ),),
-                trailing: Icon(Icons.arrow_right),
-              ),
-              Container(
-                width: double.infinity,
-                height: 60,
-                color: const Color.fromARGB(255, 218, 215, 215),
-                child: const Padding(
-                  padding: EdgeInsets.only(left: 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Center(
-                        child: Text(
-                          'Personal information',
-                          style: TextStyle(
-                              color: Color.fromARGB(255, 45, 26, 248),
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Color.fromARGB(255, 0, 0, 255),
-                  child: Icon(
-                    Icons.person,
-                    color: Colors.white,
-                  ),
-                ),
-                title: Text('Change personal detail',style: TextStyle(
-                    fontSize:18,
-                    fontWeight: FontWeight.w500,
-                  ),),
-                trailing: Icon(
-                  Icons.arrow_right,
-                ),
-              ),
-              const ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Color.fromARGB(255, 255, 172, 62),
-                  child: Icon(
-                    Icons.key_outlined,
-                    color: Colors.white,
-                  ),
-                ),
-                title: Text('Change password',style: TextStyle(
-                    fontSize:18,
-                    fontWeight: FontWeight.w500,
-                  ),),
-                trailing: Icon(
-                  Icons.arrow_right,
-                ),
-              ),
-              const ListTile(
-                leading: CircleAvatar(
-                    backgroundColor: Color.fromARGB(255, 214, 33, 33),
-                    child: Icon(
-                      Icons.phone_outlined,
-                      color: Colors.white,
-                    )),
-                title: Text('Contact us',style: TextStyle(
-                    fontSize:18,
-                    fontWeight: FontWeight.w500,
-                  ),),
-                trailing: Icon(Icons.arrow_right),
-              ),
-              Container(
-                width: double.infinity,
-                height: 60,
-                color: const Color.fromARGB(255, 218, 215, 215),
-                child: const Padding(
-                  padding: EdgeInsets.only(left: 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Center(
-                        child: Text(
-                          'Regional',
-                          style: TextStyle(
-                              color: Color.fromARGB(255, 45, 26, 248),
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Color.fromARGB(255, 125, 40, 235),
-                  child: Icon(
-                    Icons.language_outlined,
-                    color: Colors.white,
-                  ),
-                ),
-                title: Text('Languages',style: TextStyle(
-                    fontSize:18,
-                    fontWeight: FontWeight.w500,
-                  ),),
-                trailing: Icon(Icons.arrow_right),
-              ),
-               ListTile(
-                onTap: () async{
-                  await logout(context);
-                },
-                leading: const CircleAvatar(
-                    backgroundColor: Color.fromARGB(255, 255, 172, 62),
-                    child: Icon(
-                      Icons.logout_outlined,
-                      color: Colors.white,
-                    )),
-                title: const Text('Logout',style: TextStyle(
-                    fontSize:18,
-                    fontWeight: FontWeight.w500,
-                  ),),
-                trailing: const Icon(Icons.arrow_right),
-              ),
-            ],
-          ),
-        ),
-      ),
+  Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Image.asset("assets/images/maintanent.png",width: 200,),
+      const Text("កំពុងអភិវឌ្ឃន៍",style: TextStyle(fontSize: 32),),
+    ],
+  ),
+  Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Image.asset("assets/images/maintanent.png",width: 200,),
+      const Text("កំពុងអភិវឌ្ឃន៍",style: TextStyle(fontSize: 32),),
+    ],
+  ),
+  Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Image.asset("assets/images/maintanent.png",width: 200,),
+      const Text("កំពុងអភិវឌ្ឃន៍",style: TextStyle(fontSize: 32),),
+    ],
+  ),
+      // SingleChildScrollView(
+      //   child: Padding(
+      //     padding: const EdgeInsets.only(top: 8),
+      //     child: Column(
+      //       mainAxisAlignment: MainAxisAlignment.center,
+      //       children: [
+      //         Container(
+      //           height: 100,
+      //           width: 100,
+      //           decoration: BoxDecoration(
+      //               borderRadius: BorderRadius.circular(50),
+      //               border: Border.all(width: 2, color: Colors.yellow)),
+      //           child: ClipOval(
+      //             child: Image.asset('assets/images/profile.jpg',
+      //                 fit: BoxFit.cover),
+      //           ),
+      //         ),
+      //         const Text(
+      //           'Username',
+      //           style: TextStyle(
+      //             fontWeight: FontWeight.w600,
+      //             fontSize: 20,
+      //           ),
+      //         ),
+      //         Container(
+      //           width: double.infinity,
+      //           height: 60,
+      //           color: const Color.fromARGB(255, 218, 215, 215),
+      //           child: const Padding(
+      //             padding: EdgeInsets.only(left: 12),
+      //             child: Row(
+      //               mainAxisAlignment: MainAxisAlignment.start,
+      //               children: [
+      //                 Center(
+      //                   child: Text(
+      //                     'General information',
+      //                     style: TextStyle(
+      //                         color: Color.fromARGB(255, 45, 26, 248),
+      //                         fontSize: 20,
+      //                         fontWeight: FontWeight.w600),
+      //                   ),
+      //                 ),
+      //               ],
+      //             ),
+      //           ),
+      //         ),
+      //         const ListTile(
+      //           leading: CircleAvatar(
+      //             backgroundColor: Color.fromARGB(255, 0, 0, 255),
+      //             child: Icon(
+      //               Icons.attach_money_outlined,
+      //               color: Colors.white,
+      //             ),
+      //           ),
+      //           title: Text(
+      //             'Top up all service',
+      //             style: TextStyle(
+      //               fontSize:18,
+      //               fontWeight: FontWeight.w500,
+      //             ),
+      //           ),
+      //           trailing: Icon(
+      //             Icons.arrow_right,
+      //           ),
+      //         ),
+      //         const ListTile(
+      //           leading: CircleAvatar(
+      //             backgroundColor: Color.fromARGB(255, 214, 33, 33),
+      //             child: Icon(
+      //               Icons.balance_outlined,
+      //               color: Colors.white,
+      //             ),
+      //           ),
+      //           title: Text('Show main balance',style: TextStyle(
+      //               fontSize:18,
+      //               fontWeight: FontWeight.w500,
+      //             ),),
+      //           trailing: Icon(
+      //             Icons.arrow_right,
+      //           ),
+      //         ),
+      //         const ListTile(
+      //           leading: CircleAvatar(
+      //             backgroundColor: Color.fromARGB(255, 33, 214, 73),
+      //             child: Icon(
+      //               Icons.money_off_outlined,
+      //               color: Colors.white,
+      //             ),
+      //           ),
+      //           title: Text('Credit card',style: TextStyle(
+      //               fontSize:18,
+      //               fontWeight: FontWeight.w500,
+      //             ),),
+      //           trailing: Icon(Icons.arrow_right),
+      //         ),
+      //         const ListTile(
+      //           leading: CircleAvatar(
+      //               backgroundColor: Color.fromARGB(255, 255, 172, 62),
+      //               child: Icon(
+      //                 Icons.monetization_on_outlined,
+      //                 color: Colors.white,
+      //               )),
+      //           title: Text('Payment history',style: TextStyle(
+      //               fontSize:18,
+      //               fontWeight: FontWeight.w500,
+      //             ),),
+      //           trailing: Icon(Icons.arrow_right),
+      //         ),
+      //         Container(
+      //           width: double.infinity,
+      //           height: 60,
+      //           color: const Color.fromARGB(255, 218, 215, 215),
+      //           child: const Padding(
+      //             padding: EdgeInsets.only(left: 12),
+      //             child: Row(
+      //               mainAxisAlignment: MainAxisAlignment.start,
+      //               children: [
+      //                 Center(
+      //                   child: Text(
+      //                     'Personal information',
+      //                     style: TextStyle(
+      //                         color: Color.fromARGB(255, 45, 26, 248),
+      //                         fontSize: 20,
+      //                         fontWeight: FontWeight.w600),
+      //                   ),
+      //                 ),
+      //               ],
+      //             ),
+      //           ),
+      //         ),
+      //         const ListTile(
+      //           leading: CircleAvatar(
+      //             backgroundColor: Color.fromARGB(255, 0, 0, 255),
+      //             child: Icon(
+      //               Icons.person,
+      //               color: Colors.white,
+      //             ),
+      //           ),
+      //           title: Text('Change personal detail',style: TextStyle(
+      //               fontSize:18,
+      //               fontWeight: FontWeight.w500,
+      //             ),),
+      //           trailing: Icon(
+      //             Icons.arrow_right,
+      //           ),
+      //         ),
+      //         const ListTile(
+      //           leading: CircleAvatar(
+      //             backgroundColor: Color.fromARGB(255, 255, 172, 62),
+      //             child: Icon(
+      //               Icons.key_outlined,
+      //               color: Colors.white,
+      //             ),
+      //           ),
+      //           title: Text('Change password',style: TextStyle(
+      //               fontSize:18,
+      //               fontWeight: FontWeight.w500,
+      //             ),),
+      //           trailing: Icon(
+      //             Icons.arrow_right,
+      //           ),
+      //         ),
+      //         const ListTile(
+      //           leading: CircleAvatar(
+      //               backgroundColor: Color.fromARGB(255, 214, 33, 33),
+      //               child: Icon(
+      //                 Icons.phone_outlined,
+      //                 color: Colors.white,
+      //               )),
+      //           title: Text('Contact us',style: TextStyle(
+      //               fontSize:18,
+      //               fontWeight: FontWeight.w500,
+      //             ),),
+      //           trailing: Icon(Icons.arrow_right),
+      //         ),
+      //         Container(
+      //           width: double.infinity,
+      //           height: 60,
+      //           color: const Color.fromARGB(255, 218, 215, 215),
+      //           child: const Padding(
+      //             padding: EdgeInsets.only(left: 12),
+      //             child: Row(
+      //               mainAxisAlignment: MainAxisAlignment.start,
+      //               children: [
+      //                 Center(
+      //                   child: Text(
+      //                     'Regional',
+      //                     style: TextStyle(
+      //                         color: Color.fromARGB(255, 45, 26, 248),
+      //                         fontSize: 20,
+      //                         fontWeight: FontWeight.w600),
+      //                   ),
+      //                 ),
+      //               ],
+      //             ),
+      //           ),
+      //         ),
+      //         const ListTile(
+      //           leading: CircleAvatar(
+      //             backgroundColor: Color.fromARGB(255, 125, 40, 235),
+      //             child: Icon(
+      //               Icons.language_outlined,
+      //               color: Colors.white,
+      //             ),
+      //           ),
+      //           title: Text('Languages',style: TextStyle(
+      //               fontSize:18,
+      //               fontWeight: FontWeight.w500,
+      //             ),),
+      //           trailing: Icon(Icons.arrow_right),
+      //         ),
+      //          ListTile(
+      //           onTap: () async{
+      //             await logout(context);
+      //           },
+      //           leading: const CircleAvatar(
+      //               backgroundColor: Color.fromARGB(255, 255, 172, 62),
+      //               child: Icon(
+      //                 Icons.logout_outlined,
+      //                 color: Colors.white,
+      //               )),
+      //           title: const Text('Logout',style: TextStyle(
+      //               fontSize:18,
+      //               fontWeight: FontWeight.w500,
+      //             ),),
+      //           trailing: const Icon(Icons.arrow_right),
+      //         ),
+      //       ],
+      //     ),
+      //   ),
+      // ),
     ];
   }
 
@@ -509,9 +542,46 @@ class _HomePageState extends State<HomePage> {
       _selectedIndex = index;
     });
   }
+   Future<void> fetchUserInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? authToken = prefs.getString('token');
 
-  @override
+    if (authToken != null) {
+      try {
+        final response = await http.get(
+          Uri.parse('${dotenv.env['BASE_URL']}/auth/user/check'),
+          headers: {
+            'Authorization': 'Bearer $authToken',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          final responseData = json.decode(response.body);
+
+          setState(() {
+            _serverImage = responseData['test']['profile'] ?? '';
+          });
+
+          await prefs.setString('id', responseData['test']['id'].toString());
+        }
+      } catch (e) {
+        // Handle error
+      }
+    }
+  }
+  Uint8List? _image;
+  String? _serverImage;
+
+ @override
   Widget build(BuildContext context) {
+    ImageProvider<Object> imageProvider;
+    if (_image != null) {
+      imageProvider = MemoryImage(_image!);
+    } else if (_serverImage != null && _serverImage!.isNotEmpty) {
+      imageProvider = NetworkImage("${dotenv.env['BASE_URL']}/storage/$_serverImage");
+    } else {
+      imageProvider = const AssetImage("assets/images/f1.png");
+    }
     return WillPopScope(
         onWillPop: () async {
           final value = await showDialog(
@@ -555,16 +625,8 @@ class _HomePageState extends State<HomePage> {
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: 40,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white, width: 3.0),
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: getImageProvider(widget.image, widget.serverImage),
-                          fit: BoxFit.cover,
-                      ),
-                    ),
+                  child: CircleAvatar(
+                    backgroundImage: imageProvider,
                   ),
                 ),
               )
@@ -594,6 +656,7 @@ class _HomePageState extends State<HomePage> {
               BottomNavigationBarItem(
                 icon: Icon(Icons.production_quantity_limits, size: 32),
                 label: 'ទំនិញ',
+                
               ),
               
               BottomNavigationBarItem(

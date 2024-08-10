@@ -1,14 +1,11 @@
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cammotor_new_version/src/model/order_detail.dart';
 import 'package:cammotor_new_version/src/providers/real_product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
-import 'package:badges/badges.dart' as badges;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../services/store_basket.dart';
-import '../bucket/basket_notifier.dart';
 import '../bucket/bucket_screen.dart';
 import 'package:http/http.dart' as http;
 
@@ -30,7 +27,6 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
   int basketCount = 0;
   int qty = 0;
   bool _firstItemAdded = false;
-  String? _orderId; 
 
   void _onIncreaseQuantity(String productName) {
     setState(() {
@@ -62,7 +58,6 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
     for (int i = 0; i < basketItems.length; i++) {
       final item = jsonDecode(basketItems[i]) as Map<String, dynamic>;
       if (item['productId'] == productId) {
-        // Update the quantity of the existing product
         item['quantity'] += quantity;
         basketItems[i] = jsonEncode(item);
         itemExists = true;
@@ -76,7 +71,7 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
         'productName': productName,
         'quantity': quantity,
         'img': img,
-        'price': price,  // Include the price
+        'price': price, 
       }));
     }
     await prefs.setStringList('basketItems', basketItems);
@@ -146,6 +141,20 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
       appBar: AppBar(
         title: const Text('Products'),
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () async {
+            final prefs = await SharedPreferences.getInstance();
+            final orderId = prefs.getString('orderId');
+
+            if (orderId != null) {
+              await deleteOrder(orderId);
+              await prefs.remove('orderId');  // Clear the orderId after deletion
+            }
+
+            Navigator.pop(context);
+          },
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 12),
@@ -534,7 +543,7 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
                       ),
                       onPressed: () {
                         updateQtyCallback(dialogQty);
-                        _saveBasketItem(productId, productName, dialogQty, img, double.parse(price)); // Ensure price is passed as a double
+                        _saveBasketItem(productId, productName, dialogQty, img, double.parse(price)); 
 
                         if (!_firstItemAdded) {
                           _fetchDataStoreBasketModel(dialogQty);
@@ -560,10 +569,7 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
   @override
   bool get wantKeepAlive => true;
 
-  final TextEditingController _totalController = TextEditingController();
-  String? _result = '';
 
-  List<OrderDetailModel> _orderList = [];
 
   Future<void> _fetchDataStoreBasketModel(int subcategoryID) async {
     try {
@@ -578,25 +584,21 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
           print('Order data: $orderData'); 
           print('Extracted order ID: $orderId'); 
           setState(() {
-            _orderId = orderId;
           });
           await _storeOrderId(orderId);
         } else {
           print('Order data is null');
           setState(() {
-            _orderId = null;
           });
         }
       } else if (response.containsKey('orderId')) {
         final orderId = response['orderId'].toString();
         setState(() {
-          _orderId = orderId;
         });
         await _storeOrderId(orderId);
       } else {
         print('Unexpected response structure');
         setState(() {
-          _orderId = null;
         });
       }
     } catch (e) {
@@ -635,7 +637,44 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
       print('Order item created successfully');
     }
   }
-  
+
+  Future<void> deleteOrder(String orderId) async {
+    final url = 'http://68.183.234.112:2025/api/order/$orderId/delete';
+    print('Sending DELETE request to $url');
+    
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      print('Order deleted successfully');
+
+      // Clear items in the cart after deleting the order
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('basketItems'); // Clear the cart items
+      await prefs.remove('orderId'); // Clear the stored orderId
+
+      // Clear the basket count in the provider
+      final basketProvider = Provider.of<BasketProvider>(context, listen: false);
+      basketProvider.setBasketCount(0);
+
+      setState(() {
+        basketCount = 0; // Reset basket count in the UI
+// Reset the order ID
+      });
+
+      print('Cart items cleared successfully');
+    } else {
+      print('Failed to delete order: ${response.body}');
+    }
+  }
+
 }
 
 

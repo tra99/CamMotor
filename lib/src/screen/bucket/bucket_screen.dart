@@ -10,7 +10,7 @@ import '../homepage.dart';
 import 'basket_notifier.dart';
 
 class BasketPage extends StatefulWidget {
-  const BasketPage({Key? key}) : super(key: key);
+  const BasketPage({super.key});
 
   @override
   _BasketPageState createState() => _BasketPageState();
@@ -252,6 +252,15 @@ class _BasketPageState extends State<BasketPage> {
                         final orderUpdated = await _updateOrder(2);
                         if (orderUpdated) {
                           _dialogSuccess(_calculateTotal());
+                          final prefs=await SharedPreferences.getInstance();
+                          await prefs.remove('basketItems');
+                          await prefs.remove('orderId');
+
+                          setState(() {
+                            _orderId = null;
+                            basketItems.clear();
+                          });
+                          BasketNotifier.updateCount(0);
                         } else {
                           print('Failed to update order');
                         }

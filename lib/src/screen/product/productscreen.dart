@@ -298,7 +298,7 @@ class _ProductScreenState extends State<ProductScreen> with AutomaticKeepAliveCl
       provider.fetchSubCategoryData(
         provider.currentPage + 1,
         provider.pageSize,
-        displayList[selectedCategoryIndex].id, // Pass category ID
+        displayList[selectedCategoryIndex].id,
       );
     }
   }

@@ -59,6 +59,7 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   dialog_alert: ^0.0.3
   intl: ^0.19.0
+  http_parser: ^4.0.2
 
 dev_dependencies:
   flutter_test:
