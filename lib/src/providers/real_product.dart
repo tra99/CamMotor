@@ -41,7 +41,7 @@ class RealProductProvider extends ChangeNotifier {
         currentPage++;
       }
     } catch (e) {
-      print("Error fetching product data: $e");
+      // print("Error fetching product data: $e");
       // Handle error as needed
     } finally {
       isLoading = false;
@@ -63,7 +63,7 @@ class RealProductProvider extends ChangeNotifier {
       filteredProductData.addAll(products);
       currentPage++; // Increment after initial data fetch
     } catch (e) {
-      print("Error fetching initial data: $e");
+      // print("Error fetching initial data: $e");
       // Handle errors as needed
     } finally {
       isLoading = false;

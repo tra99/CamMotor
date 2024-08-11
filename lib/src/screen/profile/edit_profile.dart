@@ -1,19 +1,28 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'dart:io';
 import 'package:cammotor_new_version/src/screen/profile/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+// ignore: depend_on_referenced_packages
 import 'package:path_provider/path_provider.dart';
 
-ImageProvider getImageProvider(Uint8List? image, String? serverImage) {
+ImageProvider getImageProvider(Uint8List? image, File? imageFile, String? serverImage) {
   if (image != null) {
     return MemoryImage(image);
-  } else if (serverImage != null) {
-    return NetworkImage("${dotenv.env['BASE_URL']}/storage/$serverImage");
+  } else if (imageFile != null) {
+    return FileImage(imageFile);
+  } else if (serverImage != null && serverImage.isNotEmpty) {
+    final url = "${dotenv.env['BASE_URL']}/storage/$serverImage";
+    try {
+      return NetworkImage(url);
+    } catch (e) {
+      // print("Failed to load image from $url: $e");
+      return const AssetImage('assets/images/f1.png');
+    }
   } else {
     return const AssetImage('assets/images/f1.png');
   }
@@ -32,54 +41,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   int? id;
   Uint8List? _image;
   String? _serverImage;
-  int? main_balance;
-  int? type_userID;
+  int? mainBalance;
+  int? typeUserID;
   String? dob;
   int? telephone;
+  File? _imageFile;
 
-  void _clearImage() {
+  void clearImage() {
     setState(() {
       _image = null;
+      _imageFile = null;
     });
   }
 
-  Future<void> _selectImage(BuildContext parentContext) async {
-    return showDialog(
-      context: parentContext,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          title: const Text('កែប្រែរូបភាព', style: TextStyle(fontWeight: FontWeight.w800)),
-          children: <Widget>[
-            SimpleDialogOption(
-              onPressed: () async {
-                Navigator.pop(context);
-                final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
-                if (pickedFile != null) {
-                  final bytes = await pickedFile.readAsBytes();
-                  setState(() {
-                    _image = bytes;
-                  });
-                }
-              },
-              child: const Text('ថតរូបភាព', style: TextStyle(fontWeight: FontWeight.w500, decoration: TextDecoration.underline)),
-            ),
-            SimpleDialogOption(
-              onPressed: () async {
-                Navigator.pop(context);
-                final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-                if (pickedFile != null) {
-                  final bytes = await pickedFile.readAsBytes();
-                  setState(() {
-                    _image = bytes;
-                  });
-                }
-              },
-              child: const Text('បញ្ជីរូបភាព', style: TextStyle(fontWeight: FontWeight.w500, decoration: TextDecoration.underline)),
-            ),
-          ],
-        );
-      },
-    );
+  Future<void> _selectImage(BuildContext context) async {
+    final ImagePicker picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+        _image = null;  // Ensure the memory image is cleared when selecting a new image.
+      });
+    }
   }
 
   Future<void> fetchUserInfo() async {
@@ -96,24 +79,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
+        // print('Response Data: $responseData');
+
         setState(() {
-          name = responseData['test']['name'];
-          email = responseData['test']['email'];
-          id = responseData['test']['id'];
-          _serverImage = responseData['test']['profile'];
-          main_balance = responseData['test']['main_balance'];
-          type_userID = responseData['test']['type_userID'];
+          name = responseData['test']['name'] ?? '';
+          email = responseData['test']['email'] ?? '';
+          id = responseData['test']['id'] ?? 0;
+
+          if (responseData['test']['profile'] is List) {
+            _serverImage = responseData['test']['profile'].isNotEmpty ? responseData['test']['profile'][0] : null;
+          } else {
+            _serverImage = responseData['test']['profile']?.toString().isNotEmpty == true
+                ? responseData['test']['profile']
+                : null;
+          }
+
+          mainBalance = responseData['test']['main_balance'] ?? 0;
+          typeUserID = responseData['test']['type_userID'] ?? 0;
           dob = responseData['test']['dateOfbirth'] ?? 'no data';
           telephone = responseData['test']['phone_number'] != null
               ? int.tryParse(responseData['test']['phone_number'].toString())
               : null;
         });
-        print(responseData);
       } else {
-        print('Failed to fetch user info');
+        // print('Failed to fetch user info');
       }
     } else {
-      print('Authentication token not found');
+      // print('Authentication token not found');
     }
   }
 
@@ -176,125 +168,120 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   void _showSuccessDialog() {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text("អ្នកបានកែប្រែជោគជ័យ!!!", style: TextStyle(color: Colors.green)),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ProfileInfoScreen(),
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("អ្នកបានកែប្រែជោគជ័យ!!!", style: TextStyle(color: Colors.green)),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProfileInfoScreen(),
+                  ),
+                );
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
-              );
-            },
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.green, // Background color
-              padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0), // Padding for the button
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0), // Rounded corners
+              ),
+              child: const Text(
+                "ជោគជ័យ",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-            child: const Text(
-              "ជោគជ័យ",
-              style: TextStyle(
-                color: Colors.white, // Text color
-                fontSize: 16.0, // Text size
-                fontWeight: FontWeight.bold, // Text weight
-              ),
-            ),
-          ),
-        ],
-      );
-    },
-  );
-}
-
-  Future<File> _downloadFile(String url, String filename) async {
-    final response = await http.get(Uri.parse(url));
-    final bytes = response.bodyBytes;
-
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/$filename');
-
-    return file.writeAsBytes(bytes);
+          ],
+        );
+      },
+    );
   }
 
   Future<void> updateProfileInfo() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? authToken = prefs.getString('token');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? authToken = prefs.getString('token');
 
-  if (authToken != null) {
-    var request = http.MultipartRequest(
-      'POST',
-      Uri.parse('${dotenv.env['BASE_URL']}/auth/user/update'),
-    );
-    request.headers['Authorization'] = 'Bearer $authToken';
+    if (authToken != null) {
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('${dotenv.env['BASE_URL']}/auth/user/update'),
+      );
+      request.headers['Authorization'] = 'Bearer $authToken';
 
-    if (_image != null) {
-      // If a new image is selected, add it to the request
-      request.files.add(http.MultipartFile.fromBytes(
-        'profile',
-        _image!,
-        filename: 'profile.jpg',
-      ));
-    } else if (_serverImage != null && _serverImage!.isNotEmpty) {
-      // If no new image is selected, fetch the existing one from the server
-      final file = await _downloadFile('${dotenv.env['BASE_URL']}/storage/$_serverImage', 'profile.jpg');
-      request.files.add(await http.MultipartFile.fromPath(
-        'profile',
-        file.path,
-      ));
-    }
+      // Adding the ID field as text
+      request.fields['id'] = id.toString();
 
-    // Add fields from the text controllers
-    request.fields['id'] = id.toString();
-    request.fields['name'] = _controller1.text.isNotEmpty ? _controller1.text : name!;
-    request.fields['email'] = _controller2.text.isNotEmpty ? _controller2.text : email!;
-    request.fields['phone_number'] = _controller3.text.isNotEmpty ? _controller3.text : telephone?.toString() ?? '';
-    request.fields['main_balance'] = _controller7.text.isNotEmpty ? _controller7.text : main_balance.toString();
-    request.fields['type_userID'] = type_userID?.toString() ?? '';
-    request.fields['dateOfbirth'] = _controller4.text.isNotEmpty ? _controller4.text : dob!;
+      // Adding other text fields
+      request.fields['name'] = _controller1.text.isNotEmpty ? _controller1.text : name!;
+      request.fields['main_balance'] = _controller7.text.isNotEmpty ? _controller7.text : mainBalance.toString();
+      request.fields['phone_number'] = _controller3.text.isNotEmpty ? _controller3.text : telephone?.toString() ?? '';
+      request.fields['dateOfbirth'] = _controller4.text.isNotEmpty ? _controller4.text : dob!;
 
-    try {
-      final response = await request.send();
-      final responseBody = await response.stream.bytesToString();
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = jsonDecode(responseBody);
-        if (responseData.containsKey('message')) {
-          String backendMessage = responseData['message'];
-          _showSuccessDialog();
-          print('Server message: $backendMessage');
-        } else {
-          print('Profile updated successfully');
-        }
+      // Handling the profile image file
+      if (_imageFile != null) {
+        request.files.add(await http.MultipartFile.fromPath(
+          'profile',
+          _imageFile!.path,
+        ));
       } else {
-        final Map<String, dynamic> responseData = jsonDecode(responseBody);
-        if (responseData.containsKey('error')) {
-          String errorMessage = responseData['error']['profile'] ?? 'Unknown error';
-          print('Error: $errorMessage');
-        } else {
-          print('Failed to update profile. Status code: ${response.statusCode}');
-        }
-      }
-    } catch (error) {
-      print('Error updating profile: $error');
-    }
-  } else {
-    print('Authentication token not found');
-  }
-}
+        ByteData byteData = await rootBundle.load('assets/images/f1.png');
+        _image = byteData.buffer.asUint8List();
 
+        final tempDir = await getTemporaryDirectory();
+        final file = await File('${tempDir.path}/default_profile.png').create();
+        file.writeAsBytesSync(_image!);
+
+        request.files.add(await http.MultipartFile.fromPath(
+          'profile',
+          file.path,
+        ));
+      }
+
+      try {
+        final response = await request.send();
+        final responseBody = await response.stream.bytesToString();
+
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> responseData = jsonDecode(responseBody);
+          if (responseData.containsKey('message')) {
+            // String backendMessage = responseData['message'];
+            _showSuccessDialog();
+            // print('Server message: $backendMessage');
+          } else {
+            // print('Profile updated successfully');
+          }
+        } else {
+          final Map<String, dynamic> responseData = jsonDecode(responseBody);
+          if (responseData.containsKey('error')) {
+            // String errorMessage = responseData['error']['profile'] ?? 'Unknown error';
+            // print('Error: $errorMessage');
+          } else {
+            // print('Failed to update profile. Status code: ${response.statusCode}');
+          }
+        }
+      } catch (error) {
+        // print('Error updating profile: $error');
+      }
+    } else {
+      // print('Authentication token not found');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: const Text("កែប្រែប្រវត្តិ"),
         centerTitle: true,
       ),
@@ -308,7 +295,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               children: [
                 CircleAvatar(
                   radius: 64,
-                  backgroundImage: getImageProvider(_image, _serverImage),
+                  backgroundImage: getImageProvider(_image, _imageFile, _serverImage),
                 ),
                 Positioned(
                   bottom: -10,
@@ -344,7 +331,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             CustomCard(
               onTap: () {},
               controller: _controller7,
-              initialText: "ទឹកប្រាក់តុល្យភាព: $main_balance",
+              initialText: "ទឹកប្រាក់តុល្យភាព: $mainBalance",
             ),
             const SizedBox(height: 16),
             CustomCard(
@@ -354,7 +341,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               initialText: dob ?? 'សូមបញ្ចូលថ្ងៃខែឆ្នាំកំណើត',
               icon: Icons.calendar_today,
               readOnly: true,
-              hasClearButton: true,
             ),
             const SizedBox(height: 80),
             SizedBox(

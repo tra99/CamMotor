@@ -17,7 +17,7 @@ class IntroPage extends StatefulWidget {
 
 class _IntroPageState extends State<IntroPage> {
   // controller move to next page
-  PageController _controller = PageController();
+  final PageController _controller = PageController();
 
   // last page it will jump to LoginScreen
   bool onLastPage=false;

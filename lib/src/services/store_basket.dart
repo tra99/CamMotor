@@ -32,12 +32,12 @@ Future<Map<String, dynamic>> fetchDataStoreBasketModel(int total) async {
         final responseData = json.decode(response.body);
         if (responseData.containsKey('test') && responseData['test'].containsKey('id')) {
           userId = responseData['test']['id'];
-          print('Fetched userID: $userId'); // Log the userID
+          // print('Fetched userID: $userId'); // Log the userID
         } else {
           throw Exception('Invalid response format: Missing "id" field.');
         }
       } else if (response.statusCode == 500) {
-        print('Server error while fetching user info: ${response.body}');
+        // print('Server error while fetching user info: ${response.body}');
         throw Exception('Server error: ${response.statusCode}');
       } else {
         throw Exception('Failed to fetch user info: ${response.statusCode}');
@@ -64,7 +64,7 @@ Future<Map<String, dynamic>> fetchDataStoreBasketModel(int total) async {
       );
 
       final responseBody = response.body;
-      print('Server response: $responseBody');
+      // print('Server response: $responseBody');
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(responseBody);
@@ -76,7 +76,7 @@ Future<Map<String, dynamic>> fetchDataStoreBasketModel(int total) async {
             // Save orderId and userId in SharedPreferences
             await prefs.setInt('orderId', orderId);
             await prefs.setInt('userID', userId); // Store userID as an integer
-            print('Stored order ID: $orderId');
+            // print('Stored order ID: $orderId');
           } else {
             throw Exception('Order ID is null');
           }
@@ -110,7 +110,7 @@ Future<Map<String, dynamic>> fetchDataStoreBasketModel(int total) async {
       };
     }
   } catch (e) {
-    print('Exception caught: $e');
+    // print('Exception caught: $e');
     throw Exception('Error fetching data: $e');
   }
 }
@@ -118,7 +118,7 @@ Future<Map<String, dynamic>> fetchDataStoreBasketModel(int total) async {
 Future<void> updateOrder(int total, int status, int orderId, int userId) async {
   try {
     // Log the orderId and userId to check their values
-    print('Updating order with orderId: $orderId and userID: $userId');
+    // print('Updating order with orderId: $orderId and userID: $userId');
 
     // Perform the POST request to update the order
     final response = await http.post(
@@ -134,12 +134,12 @@ Future<void> updateOrder(int total, int status, int orderId, int userId) async {
     );
 
     final responseBody = response.body;
-    print('Update response: $responseBody');
+    // print('Update response: $responseBody');
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(responseBody);
       if (jsonData.containsKey('status') && jsonData['status'] == 200) {
-        print('Order Updated Successfully');
+        // print('Order Updated Successfully');
       } else {
         throw Exception('Unexpected response format or error: ${jsonData['message']}');
       }
@@ -147,8 +147,8 @@ Future<void> updateOrder(int total, int status, int orderId, int userId) async {
       throw Exception('Failed to update order: ${response.statusCode}');
     }
   } catch (e) {
-    print('Exception caught: $e');
-    print('Error updating order: $e');
+    // print('Exception caught: $e');
+    // print('Error updating order: $e');
   }
 }
 

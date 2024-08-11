@@ -12,7 +12,7 @@ class _ThailandScreenState extends State<ThailandScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Thailand'),
+        title: const Text('Thailand'),
       ),
     );
   }

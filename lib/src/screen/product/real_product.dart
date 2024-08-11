@@ -28,21 +28,7 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
   int qty = 0;
   bool _firstItemAdded = false;
 
-  void _onIncreaseQuantity(String productName) {
-    setState(() {
-      qty++;
-    });
-    _updateBasketItemQuantity(productName, qty);
-  }
 
-  void _onDecreaseQuantity(String productName) {
-    if (qty > 0) {
-      setState(() {
-        qty--;
-      });
-      _updateBasketItemQuantity(productName, qty);
-    }
-  }
     void updateQuantity(int newQuantity) {
       setState(() {
         qty = newQuantity;
@@ -88,6 +74,7 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
       totalCount += decodedItem['quantity'] as int;
     }
 
+    // ignore: use_build_context_synchronously
     final basketProvider = Provider.of<BasketProvider>(context, listen: false);
     basketProvider.setBasketCount(totalCount);
   }
@@ -109,36 +96,20 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
     try {
       await provider.fetchInitialData(subcategoryID);
     } catch (e) {
-      print("Error: $e");
+      // print("Error: $e");
     }
   }
 
-  Future<void> _incrementBasketCount() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      basketCount++;
-      prefs.setInt('basketCount', basketCount);
-    });
-  }
 
-  void _updateBasketItemQuantity(String productName, int quantity) async {
-    final prefs = await SharedPreferences.getInstance();
-    final basketItems = prefs.getStringList('basketItems') ?? [];
-    final updatedBasketItems = basketItems.map((item) {
-    final decodedItem = jsonDecode(item) as Map<String, dynamic>;
-      if (decodedItem['productName'] == productName) {
-        decodedItem['quantity'] = quantity;
-      }
-      return jsonEncode(decodedItem);
-    }).toList();
-    await prefs.setStringList('basketItems', updatedBasketItems);
-  }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        scrolledUnderElevation: 0,
         title: const Text('Products'),
         centerTitle: true,
         leading: IconButton(
@@ -152,6 +123,7 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
               await prefs.remove('orderId');  // Clear the orderId after deletion
             }
 
+            // ignore: use_build_context_synchronously
             Navigator.pop(context);
           },
         ),
@@ -237,7 +209,7 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
                   onNotification: (ScrollNotification scrollInfo) {
                     if (!provider.isLoading &&
                         scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-                      print('ScrollNotification triggered, fetching more data...');
+                      // print('ScrollNotification triggered, fetching more data...');
                       provider.fetchProductData(
                         provider.currentPage + 1,
                       );
@@ -390,7 +362,7 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
   void _scrollListener() {
     final provider = Provider.of<RealProductProvider>(context, listen: false);
     if (!provider.isLoading && _scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-      print('ScrollListener triggered, fetching more data...');
+      // print('ScrollListener triggered, fetching more data...');
       provider.fetchProductData(widget.subcategoryID);
     }
   }
@@ -574,20 +546,20 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
   Future<void> _fetchDataStoreBasketModel(int subcategoryID) async {
     try {
       final response = await fetchDataStoreBasketModel(subcategoryID);
-      print('Server response: $response'); 
+      // print('Server response: $response'); 
 
       if (response.containsKey('data')) {
         final Map<String, dynamic> responseData = response;
         final orderData = responseData['data'];
         if (orderData != null) {
           final orderId = orderData['id'].toString();
-          print('Order data: $orderData'); 
-          print('Extracted order ID: $orderId'); 
+          // print('Order data: $orderData'); 
+          // print('Extracted order ID: $orderId'); 
           setState(() {
           });
           await _storeOrderId(orderId);
         } else {
-          print('Order data is null');
+          // print('Order data is null');
           setState(() {
           });
         }
@@ -597,12 +569,12 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
         });
         await _storeOrderId(orderId);
       } else {
-        print('Unexpected response structure');
+        // print('Unexpected response structure');
         setState(() {
         });
       }
     } catch (e) {
-      print('Error fetching data: $e');
+      // print('Error fetching data: $e');
     }
   }
 
@@ -613,8 +585,8 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
 
   Future<void> createOrderItem(
     int quantityOrder, double total, int orderID, int productID) async {
-    final url = 'http://68.183.234.112:2025/api/order_items';
-    print('Sending POST request to $url with data: quantity_order=$quantityOrder, total=$total, orderID=$orderID, productID=$productID');
+    const url = 'http://68.183.234.112:2025/api/order_items';
+    // print('Sending POST request to $url with data: quantity_order=$quantityOrder, total=$total, orderID=$orderID, productID=$productID');
     final response = await http.post(
       Uri.parse(url),
       headers: {
@@ -628,19 +600,19 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
       }),
     );
 
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+    // print('Response status: ${response.statusCode}');
+    // print('Response body: ${response.body}');
 
     if (response.statusCode != 200) {
-      print('Failed to create order item: ${response.body}');
+      // print('Failed to create order item: ${response.body}');
     } else {
-      print('Order item created successfully');
+      // print('Order item created successfully');
     }
   }
 
   Future<void> deleteOrder(String orderId) async {
     final url = 'http://68.183.234.112:2025/api/order/$orderId/delete';
-    print('Sending DELETE request to $url');
+    // print('Sending DELETE request to $url');
     
     final response = await http.post(
       Uri.parse(url),
@@ -649,11 +621,11 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
       },
     );
 
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+    // print('Response status: ${response.statusCode}');
+    // print('Response body: ${response.body}');
 
     if (response.statusCode == 200) {
-      print('Order deleted successfully');
+      // print('Order deleted successfully');
 
       // Clear items in the cart after deleting the order
       final prefs = await SharedPreferences.getInstance();
@@ -661,6 +633,7 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
       await prefs.remove('orderId'); // Clear the stored orderId
 
       // Clear the basket count in the provider
+      // ignore: use_build_context_synchronously
       final basketProvider = Provider.of<BasketProvider>(context, listen: false);
       basketProvider.setBasketCount(0);
 
@@ -669,9 +642,9 @@ class _RealProductState extends State<RealProduct> with AutomaticKeepAliveClient
 // Reset the order ID
       });
 
-      print('Cart items cleared successfully');
+      // print('Cart items cleared successfully');
     } else {
-      print('Failed to delete order: ${response.body}');
+      // print('Failed to delete order: ${response.body}');
     }
   }
 

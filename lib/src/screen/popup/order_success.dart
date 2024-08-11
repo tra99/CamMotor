@@ -1,7 +1,7 @@
 import 'package:cammotor_new_version/src/screen/homepage.dart';
 import 'package:flutter/material.dart';
 
-Future<void> _dialogSuccess(BuildContext context) {
+Future<void> dialogSuccess(BuildContext context) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -83,7 +83,7 @@ Future<void> _dialogSuccess(BuildContext context) {
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>const HomePage()));
                     },
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.white,
@@ -100,7 +100,7 @@ Future<void> _dialogSuccess(BuildContext context) {
                         fontStyle: FontStyle.italic,
                       ),
                     ),
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.verified),

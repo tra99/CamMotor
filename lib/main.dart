@@ -3,22 +3,15 @@ import 'package:cammotor_new_version/src/providers/pagination.dart';
 import 'package:cammotor_new_version/src/providers/real_product.dart';
 import 'package:cammotor_new_version/src/providers/sub_categ.dart';
 import 'package:cammotor_new_version/src/providers/user.dart';
-import 'package:cammotor_new_version/src/screen/authentication/login.dart';
 import 'package:cammotor_new_version/src/screen/bucket/provider/basket_provider.dart';
 import 'package:cammotor_new_version/src/services/property.dart';
-import 'package:cammotor_new_version/src/tests/t2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'src/screen/homepage.dart';
-import 'src/screen/product/real_product.dart';
-import 'src/screen/profile/edit_profile.dart';
-import 'src/screen/profile/profile.dart';
+
 import 'src/splash_screen/splash_screen.dart';
-import 'src/tests/add_to_card.dart';
-import 'src/screen/order_history/order_list.dart';
-import 'src/tests/test_store_backet.dart';
+
 
 void main() async {
   dotenv.load(fileName: ".env");
@@ -53,11 +46,10 @@ class MyApp extends StatelessWidget {
   final String? token;
   final bool showIntroScreen;
 
-  const MyApp({Key? key, required this.token, required this.showIntroScreen}) : super(key: key);
+  const MyApp({super.key, required this.token, required this.showIntroScreen});
 
   @override
   Widget build(BuildContext context) {
-    bool isLoggedIn = token != null && token!.isNotEmpty;
 
     return MaterialApp(
       title: 'Flutter Demo',
@@ -77,7 +69,7 @@ class MyApp extends StatelessWidget {
   }
 }
 class PropertyWidget extends StatefulWidget {
-  const PropertyWidget({Key? key}) : super(key: key); // Fixed constructor super call
+  const PropertyWidget({super.key}); // Fixed constructor super call
 
   @override
   State<PropertyWidget> createState() => _PropertyWidgetState();

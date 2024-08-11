@@ -35,10 +35,10 @@ class UserProvider with ChangeNotifier {
           _orders = responseData.cast<Map<String, dynamic>>();
           notifyListeners();
         } else {
-          print('Failed to fetch orders: ${response.statusCode}');
+          // print('Failed to fetch orders: ${response.statusCode}');
         }
       } catch (e) {
-        print('Error fetching orders: $e');
+        // print('Error fetching orders: $e');
       }
     }
   }

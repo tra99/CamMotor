@@ -8,10 +8,10 @@ class ProductExpandedWidget extends StatelessWidget {
   final double screenWidth;
 
   const ProductExpandedWidget({
-    Key? key,
+    super.key,
     required this.filteredSubCategoryList,
     required this.screenWidth,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

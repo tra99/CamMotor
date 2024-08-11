@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 Container reusableTextField(String text, IconData icon, bool isPasswordType,double customHeight) {
+  // ignore: sized_box_for_whitespace
   return Container(
     height: customHeight,
     child: TextField(
@@ -30,6 +31,7 @@ Container reusableTextField(String text, IconData icon, bool isPasswordType,doub
             : TextInputType.emailAddress),
   );}
 Container reusableTextField1(String text, IconData icon, bool isPasswordType,double customHeight) {
+  // ignore: sized_box_for_whitespace
   return Container(
     height: customHeight,
     child: TextField(

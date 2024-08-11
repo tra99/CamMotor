@@ -13,12 +13,13 @@ class BasketPage extends StatefulWidget {
   const BasketPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _BasketPageState createState() => _BasketPageState();
 }
 
 class _BasketPageState extends State<BasketPage> {
   List<Map<String, dynamic>> basketItems = [];
-  Map<int, bool> _checkedItems = {};
+  final Map<int, bool> _checkedItems = {};
   String? _orderId;
 
   @override
@@ -27,11 +28,6 @@ class _BasketPageState extends State<BasketPage> {
     _loadBasketItems();
   }
 
-  Future<void> _storeOrderId(String orderId) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('orderId', orderId); 
-    print('Stored order ID: $orderId');
-  }
 
   Future<void> _loadBasketItems() async {
     final prefs = await SharedPreferences.getInstance();
@@ -47,24 +43,10 @@ class _BasketPageState extends State<BasketPage> {
       _orderId = prefs.getString('orderId');
     });
 
-    print('Loaded order ID: $_orderId');
+    // print('Loaded order ID: $_orderId');
     _updateBasketCount();
   }
 
-  Future<void> _addItemToBasket(Map<String, dynamic> item) async {
-    final prefs = await SharedPreferences.getInstance();
-    final basketStringList = prefs.getStringList('basketItems') ?? [];
-
-    basketStringList.add(jsonEncode(item));
-
-    await prefs.setStringList('basketItems', basketStringList);
-
-    setState(() {
-      basketItems.add(item);
-    });
-
-    _updateBasketCount();
-  }
 
   Future<void> _removeBasketItem(int index) async {
     final prefs = await SharedPreferences.getInstance();
@@ -91,29 +73,6 @@ class _BasketPageState extends State<BasketPage> {
     BasketNotifier.updateCount(totalCount);
   }
 
-  Future<void> _fetchDataStoreBasketModel(int subcategoryID) async {
-    try {
-      final response = await fetchDataStoreBasketModel(subcategoryID);
-      print('Server response: $response');
-
-      if (response.containsKey('orderId')) {
-        final orderId = response['orderId'].toString();
-        print('Extracted order ID: $orderId');
-        setState(() {
-          _orderId = orderId;
-        });
-        await _storeOrderId(orderId);
-      } else {
-        print('Unexpected response structure');
-        setState(() {
-          _orderId = null;
-        });
-      }
-      print('Loaded order ID: $_orderId');
-    } catch (e) {
-      print('Error fetching data: $e');
-    }
-  }
 
   Future<void> _postOrderItem(Map<String, dynamic> item) async {
     final String url = '${dotenv.env['BASE_URL']}/order_items';
@@ -122,8 +81,8 @@ class _BasketPageState extends State<BasketPage> {
     final double? price = item['price']?.toDouble();
 
     if (quantity == 0 || price == null) {
-      print('Error: Quantity or price is null');
-      print('Item: $item');
+      // print('Error: Quantity or price is null');
+      // print('Item: $item');
       return;
     }
 
@@ -141,15 +100,15 @@ class _BasketPageState extends State<BasketPage> {
         body: jsonEncode(body),
       );
 
-      print('API Response: ${response.statusCode} - ${response.body}');
+      // print('API Response: ${response.statusCode} - ${response.body}');
 
       if (response.statusCode == 200) {
-        print('Order item posted successfully');
+        // print('Order item posted successfully');
       } else {
-        print('Failed to post order item. Status code: ${response.statusCode}');
+        // print('Failed to post order item. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error posting order item: $e');
+      // print('Error posting order item: $e');
     }
   }
 
@@ -182,15 +141,17 @@ class _BasketPageState extends State<BasketPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 235, 233, 233),
+        scrolledUnderElevation: 0,
         title: const Text('កន្ត្រកទំនិញរបស់ខ្ញុំ'),
       ),
       body: Column(
         children: [
           Expanded(
             child: basketItems.isEmpty
-                ? const Center(child: Text('Your basket is empty'))
+                ? const Center(child: Text('មិនមានទំនិញទេ'))
                 : ListView.builder(
                     itemCount: basketItems.length,
                     itemBuilder: (context, index) {
@@ -227,13 +188,13 @@ class _BasketPageState extends State<BasketPage> {
                           trailing: IconButton(
                             icon: const Icon(Icons.delete),
                             onPressed: () {
-                              print('Removing item: $item');
+                              // print('Removing item: $item');
                               _removeBasketItem(index);
                             },
                           ),
                           onTap: () async {
-                            print('Item: $item');
-                            print('Product ID: ${item['productId']}');
+                            // print('Item: $item');
+                            // print('Product ID: ${item['productId']}');
                           },
                         ),
                       );
@@ -262,7 +223,7 @@ class _BasketPageState extends State<BasketPage> {
                           });
                           BasketNotifier.updateCount(0);
                         } else {
-                          print('Failed to update order');
+                          // print('Failed to update order');
                         }
                         final prefs = await SharedPreferences.getInstance();
                         await prefs.remove('orderId');
@@ -270,7 +231,7 @@ class _BasketPageState extends State<BasketPage> {
                           _orderId = null;
                         });
                       } else {
-                        print('No order ID found');
+                        // print('No order ID found');
                       }
                     }
                   : null,

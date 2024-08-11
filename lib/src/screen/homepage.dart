@@ -10,7 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../components/card/card_custom.dart';
 import '../providers/bottom_sheet.dart';
 import '../services/store_basket.dart';
-import 'authentication/logic/logout.dart';
 import 'order_history/order_list.dart';
 
 class HomePage extends StatefulWidget {
@@ -47,18 +46,18 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   late List<Widget> _widgetOptions;
 
-  List<choices> ch = const <choices>[
-    choices(name: 'វីឌីអូបង្រៀន', image: AssetImage('assets/images/teaching.png')),
-    choices(name: 'ទីតាំងជួសជុល', image: AssetImage('assets/images/repair.png')),
-    choices(name: 'ទំនិញ', image: AssetImage('assets/images/product.png')),
-    choices(
+  List<Choices> ch = const <Choices>[
+    Choices(name: 'វីឌីអូបង្រៀន', image: AssetImage('assets/images/teaching.png')),
+    Choices(name: 'ទីតាំងជួសជុល', image: AssetImage('assets/images/repair.png')),
+    Choices(name: 'ទំនិញ', image: AssetImage('assets/images/product.png')),
+    Choices(
         name: 'ការលក់', image: AssetImage('assets/images/sell_motor.png')),
   ];
-  List<choices> chs = const <choices>[
-    choices(name: 'Original', image: AssetImage('assets/images/box.png')),
-    choices(name: 'Copy', image: AssetImage('assets/images/box.png')),
-    choices(name: 'General', image: AssetImage('assets/images/box.png')),
-    choices(name: 'Rpairing', image: AssetImage('assets/images/box.png')),
+  List<Choices> chs = const <Choices>[
+    Choices(name: 'Original', image: AssetImage('assets/images/box.png')),
+    Choices(name: 'Copy', image: AssetImage('assets/images/box.png')),
+    Choices(name: 'General', image: AssetImage('assets/images/box.png')),
+    Choices(name: 'Rpairing', image: AssetImage('assets/images/box.png')),
   ];
 
   List<String> text2 = [
@@ -71,7 +70,7 @@ class _HomePageState extends State<HomePage> {
   Future<int> _getUserId() async {
     final prefs = await SharedPreferences.getInstance();
     final storedId = prefs.getString('id') ?? '0';
-     print('Stored User ID: $storedId');
+    //  print('Stored User ID: $storedId');
     return int.tryParse(storedId) ?? 0;
   }
 
@@ -138,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                                 ],
 
                                 onTap: () {
-                                  print("Tap Event");
+                                  // print("Tap Event");
                                 },
                               ),
                             ),
@@ -186,6 +185,7 @@ class _HomePageState extends State<HomePage> {
                           // Change to the appropriate screen or action (e.g., HomePageChat())
                         } else if (index == 2) {
                           Future<void>.delayed(Duration.zero, () {
+                            // ignore: use_build_context_synchronously
                             displayBottomSheet(context);
                           });
                         } else if (index == 3) {
@@ -282,258 +282,27 @@ class _HomePageState extends State<HomePage> {
         }
       },
     ),
-  Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Image.asset("assets/images/maintanent.png",width: 200,),
-      const Text("កំពុងអភិវឌ្ឃន៍",style: TextStyle(fontSize: 32),),
-    ],
-  ),
-  Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Image.asset("assets/images/maintanent.png",width: 200,),
-      const Text("កំពុងអភិវឌ្ឃន៍",style: TextStyle(fontSize: 32),),
-    ],
-  ),
-  Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Image.asset("assets/images/maintanent.png",width: 200,),
-      const Text("កំពុងអភិវឌ្ឃន៍",style: TextStyle(fontSize: 32),),
-    ],
-  ),
-      // SingleChildScrollView(
-      //   child: Padding(
-      //     padding: const EdgeInsets.only(top: 8),
-      //     child: Column(
-      //       mainAxisAlignment: MainAxisAlignment.center,
-      //       children: [
-      //         Container(
-      //           height: 100,
-      //           width: 100,
-      //           decoration: BoxDecoration(
-      //               borderRadius: BorderRadius.circular(50),
-      //               border: Border.all(width: 2, color: Colors.yellow)),
-      //           child: ClipOval(
-      //             child: Image.asset('assets/images/profile.jpg',
-      //                 fit: BoxFit.cover),
-      //           ),
-      //         ),
-      //         const Text(
-      //           'Username',
-      //           style: TextStyle(
-      //             fontWeight: FontWeight.w600,
-      //             fontSize: 20,
-      //           ),
-      //         ),
-      //         Container(
-      //           width: double.infinity,
-      //           height: 60,
-      //           color: const Color.fromARGB(255, 218, 215, 215),
-      //           child: const Padding(
-      //             padding: EdgeInsets.only(left: 12),
-      //             child: Row(
-      //               mainAxisAlignment: MainAxisAlignment.start,
-      //               children: [
-      //                 Center(
-      //                   child: Text(
-      //                     'General information',
-      //                     style: TextStyle(
-      //                         color: Color.fromARGB(255, 45, 26, 248),
-      //                         fontSize: 20,
-      //                         fontWeight: FontWeight.w600),
-      //                   ),
-      //                 ),
-      //               ],
-      //             ),
-      //           ),
-      //         ),
-      //         const ListTile(
-      //           leading: CircleAvatar(
-      //             backgroundColor: Color.fromARGB(255, 0, 0, 255),
-      //             child: Icon(
-      //               Icons.attach_money_outlined,
-      //               color: Colors.white,
-      //             ),
-      //           ),
-      //           title: Text(
-      //             'Top up all service',
-      //             style: TextStyle(
-      //               fontSize:18,
-      //               fontWeight: FontWeight.w500,
-      //             ),
-      //           ),
-      //           trailing: Icon(
-      //             Icons.arrow_right,
-      //           ),
-      //         ),
-      //         const ListTile(
-      //           leading: CircleAvatar(
-      //             backgroundColor: Color.fromARGB(255, 214, 33, 33),
-      //             child: Icon(
-      //               Icons.balance_outlined,
-      //               color: Colors.white,
-      //             ),
-      //           ),
-      //           title: Text('Show main balance',style: TextStyle(
-      //               fontSize:18,
-      //               fontWeight: FontWeight.w500,
-      //             ),),
-      //           trailing: Icon(
-      //             Icons.arrow_right,
-      //           ),
-      //         ),
-      //         const ListTile(
-      //           leading: CircleAvatar(
-      //             backgroundColor: Color.fromARGB(255, 33, 214, 73),
-      //             child: Icon(
-      //               Icons.money_off_outlined,
-      //               color: Colors.white,
-      //             ),
-      //           ),
-      //           title: Text('Credit card',style: TextStyle(
-      //               fontSize:18,
-      //               fontWeight: FontWeight.w500,
-      //             ),),
-      //           trailing: Icon(Icons.arrow_right),
-      //         ),
-      //         const ListTile(
-      //           leading: CircleAvatar(
-      //               backgroundColor: Color.fromARGB(255, 255, 172, 62),
-      //               child: Icon(
-      //                 Icons.monetization_on_outlined,
-      //                 color: Colors.white,
-      //               )),
-      //           title: Text('Payment history',style: TextStyle(
-      //               fontSize:18,
-      //               fontWeight: FontWeight.w500,
-      //             ),),
-      //           trailing: Icon(Icons.arrow_right),
-      //         ),
-      //         Container(
-      //           width: double.infinity,
-      //           height: 60,
-      //           color: const Color.fromARGB(255, 218, 215, 215),
-      //           child: const Padding(
-      //             padding: EdgeInsets.only(left: 12),
-      //             child: Row(
-      //               mainAxisAlignment: MainAxisAlignment.start,
-      //               children: [
-      //                 Center(
-      //                   child: Text(
-      //                     'Personal information',
-      //                     style: TextStyle(
-      //                         color: Color.fromARGB(255, 45, 26, 248),
-      //                         fontSize: 20,
-      //                         fontWeight: FontWeight.w600),
-      //                   ),
-      //                 ),
-      //               ],
-      //             ),
-      //           ),
-      //         ),
-      //         const ListTile(
-      //           leading: CircleAvatar(
-      //             backgroundColor: Color.fromARGB(255, 0, 0, 255),
-      //             child: Icon(
-      //               Icons.person,
-      //               color: Colors.white,
-      //             ),
-      //           ),
-      //           title: Text('Change personal detail',style: TextStyle(
-      //               fontSize:18,
-      //               fontWeight: FontWeight.w500,
-      //             ),),
-      //           trailing: Icon(
-      //             Icons.arrow_right,
-      //           ),
-      //         ),
-      //         const ListTile(
-      //           leading: CircleAvatar(
-      //             backgroundColor: Color.fromARGB(255, 255, 172, 62),
-      //             child: Icon(
-      //               Icons.key_outlined,
-      //               color: Colors.white,
-      //             ),
-      //           ),
-      //           title: Text('Change password',style: TextStyle(
-      //               fontSize:18,
-      //               fontWeight: FontWeight.w500,
-      //             ),),
-      //           trailing: Icon(
-      //             Icons.arrow_right,
-      //           ),
-      //         ),
-      //         const ListTile(
-      //           leading: CircleAvatar(
-      //               backgroundColor: Color.fromARGB(255, 214, 33, 33),
-      //               child: Icon(
-      //                 Icons.phone_outlined,
-      //                 color: Colors.white,
-      //               )),
-      //           title: Text('Contact us',style: TextStyle(
-      //               fontSize:18,
-      //               fontWeight: FontWeight.w500,
-      //             ),),
-      //           trailing: Icon(Icons.arrow_right),
-      //         ),
-      //         Container(
-      //           width: double.infinity,
-      //           height: 60,
-      //           color: const Color.fromARGB(255, 218, 215, 215),
-      //           child: const Padding(
-      //             padding: EdgeInsets.only(left: 12),
-      //             child: Row(
-      //               mainAxisAlignment: MainAxisAlignment.start,
-      //               children: [
-      //                 Center(
-      //                   child: Text(
-      //                     'Regional',
-      //                     style: TextStyle(
-      //                         color: Color.fromARGB(255, 45, 26, 248),
-      //                         fontSize: 20,
-      //                         fontWeight: FontWeight.w600),
-      //                   ),
-      //                 ),
-      //               ],
-      //             ),
-      //           ),
-      //         ),
-      //         const ListTile(
-      //           leading: CircleAvatar(
-      //             backgroundColor: Color.fromARGB(255, 125, 40, 235),
-      //             child: Icon(
-      //               Icons.language_outlined,
-      //               color: Colors.white,
-      //             ),
-      //           ),
-      //           title: Text('Languages',style: TextStyle(
-      //               fontSize:18,
-      //               fontWeight: FontWeight.w500,
-      //             ),),
-      //           trailing: Icon(Icons.arrow_right),
-      //         ),
-      //          ListTile(
-      //           onTap: () async{
-      //             await logout(context);
-      //           },
-      //           leading: const CircleAvatar(
-      //               backgroundColor: Color.fromARGB(255, 255, 172, 62),
-      //               child: Icon(
-      //                 Icons.logout_outlined,
-      //                 color: Colors.white,
-      //               )),
-      //           title: const Text('Logout',style: TextStyle(
-      //               fontSize:18,
-      //               fontWeight: FontWeight.w500,
-      //             ),),
-      //           trailing: const Icon(Icons.arrow_right),
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // ),
+      Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset("assets/images/maintanent.png",width: 200,),
+          const Text("កំពុងអភិវឌ្ឃន៍",style: TextStyle(fontSize: 32),),
+        ],
+      ),
+      Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset("assets/images/maintanent.png",width: 200,),
+          const Text("កំពុងអភិវឌ្ឃន៍",style: TextStyle(fontSize: 32),),
+        ],
+      ),
+      Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset("assets/images/maintanent.png",width: 200,),
+          const Text("កំពុងអភិវឌ្ឃន៍",style: TextStyle(fontSize: 32),),
+        ],
+      ),
     ];
   }
 
@@ -582,6 +351,7 @@ class _HomePageState extends State<HomePage> {
     } else {
       imageProvider = const AssetImage("assets/images/f1.png");
     }
+    // ignore: deprecated_member_use
     return WillPopScope(
         onWillPop: () async {
           final value = await showDialog(

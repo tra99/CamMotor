@@ -12,7 +12,7 @@ class _RepairScreenProductState extends State<RepairScreenProduct> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Repair'),
+        title: const Text('Repair'),
       ),
     );
   }

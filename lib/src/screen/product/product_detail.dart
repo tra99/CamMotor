@@ -14,7 +14,7 @@ class ProductDialog extends StatelessWidget {
   final Function(int) updateQuantity;
 
   const ProductDialog({
-    Key? key,
+    super.key,
     required this.title,
     required this.imageUrl,
     required this.productDesc,
@@ -25,7 +25,7 @@ class ProductDialog extends StatelessWidget {
     required this.price,
     required this.resourceId,
     required this.updateQuantity,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -24,7 +24,7 @@ class RealProductService {
       final productList = List<Map<String, dynamic>>.from(
         responseData["students"]["data"],
       );
-      print(responseData);
+      // print(responseData);
       return productList.map((productJson) => RealProductModel.fromJson(productJson)).toList();
     } else {
       throw Exception("Failed to load product data");

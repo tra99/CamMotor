@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class IntroScreen4 extends StatefulWidget {
-  const IntroScreen4({Key? key}) : super(key: key);
+  const IntroScreen4({super.key});
 
   @override
   State<IntroScreen4> createState() => _IntroScreen4State();

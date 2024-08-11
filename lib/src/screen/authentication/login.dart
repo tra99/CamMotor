@@ -11,7 +11,7 @@ import '../../components/widget.dart';
 import '../homepage.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -46,12 +46,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', token);
-      print(token);
+      // print(token);
 
+      // ignore: use_build_context_synchronously
       _showSnackBar(context, 'ចូលគណនីជោគជ័យ');
 
       Future.delayed(const Duration(milliseconds: 500), () {
         Navigator.push(
+          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(builder: (context) => const HomePage()),
         );

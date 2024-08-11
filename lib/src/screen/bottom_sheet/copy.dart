@@ -14,7 +14,7 @@ import '../homepage.dart';
 import '../product/productscreen.dart';
 
 class CopyScreen extends StatefulWidget {
-  const CopyScreen({Key? key}) : super(key: key);
+  const CopyScreen({super.key});
 
   @override
   State<CopyScreen> createState() => _CopyScreenState();
@@ -50,7 +50,7 @@ class _CopyScreenState extends State<CopyScreen> with AutomaticKeepAliveClientMi
     try {
       await provider.fetchCopyData(page, pageSize);
     } catch (e) {
-      print("Error: $e");
+      // print("Error: $e");
     }
   }
 
@@ -60,7 +60,7 @@ class _CopyScreenState extends State<CopyScreen> with AutomaticKeepAliveClientMi
     try {
       await provider.fetchInitialData();
     } catch (e) {
-      print("Error: $e");
+      // print("Error: $e");
     }
   }
 
@@ -302,7 +302,6 @@ class _CopyScreenState extends State<CopyScreen> with AutomaticKeepAliveClientMi
   }
 
   Future<void> _showYearDialog(BuildContext context, Model selectedModel) async {
-    bool dismissed = false;
 
     try {
       await showGeneralDialog(
@@ -311,9 +310,9 @@ class _CopyScreenState extends State<CopyScreen> with AutomaticKeepAliveClientMi
         barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
         barrierColor: Colors.black.withOpacity(0.5),
         pageBuilder: (context, animation1, animation2) {
+          // ignore: deprecated_member_use
           return WillPopScope(
             onWillPop: () async {
-              dismissed = true;
               Navigator.of(context).pop();
               return false;
             },
@@ -328,7 +327,7 @@ class _CopyScreenState extends State<CopyScreen> with AutomaticKeepAliveClientMi
                   future: fetchDataYearModel(selectedModel.id),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CustomLoadingWidget();
+                      return const CustomLoadingWidget();
                     } else if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
                     } else {
@@ -392,7 +391,7 @@ class _CopyScreenState extends State<CopyScreen> with AutomaticKeepAliveClientMi
         },
       );
     } catch (e) {
-      print('Error creating dialog: $e');
+      // print('Error creating dialog: $e');
     }
   }
 }

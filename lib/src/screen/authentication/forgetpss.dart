@@ -4,7 +4,7 @@ import 'package:flutter/gestures.dart';
 import '../../components/widget.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
-  const ForgetPasswordScreen({Key? key}) : super(key: key);
+  const ForgetPasswordScreen({super.key});
 
   @override
   State<ForgetPasswordScreen> createState() => _ForgetPasswordScreenState();
@@ -130,11 +130,13 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                 const Duration(seconds: 1),
                                 () {
                                   Navigator.push(
+                                    // ignore: use_build_context_synchronously
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => const LoginScreen(),
                                     ),
                                   );
+                                  // ignore: use_build_context_synchronously
                                   _showSnackBar(context, 'ផ្លាស់ប្តូរលេខសំងាត់ជោគជ័យ');
                                 },
                               );

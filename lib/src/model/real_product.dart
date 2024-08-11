@@ -4,12 +4,16 @@ class RealProductModel {
   final String img;
   final String price;
   final int qty;
+  // ignore: non_constant_identifier_names
   final int original_price;
+  // ignore: non_constant_identifier_names
   final int wholesale_price;
   final int instock;
   final int discount;
+  // ignore: non_constant_identifier_names
   final int amount_discount;
   final int newProduct;
+  // ignore: non_constant_identifier_names
   final int type_productID;
   final int yearID;
   final int modelID;
@@ -47,12 +51,16 @@ class RealProductModel {
     required this.img,
     required this.price,
     required this.qty,
+    // ignore: non_constant_identifier_names
     required this.original_price,
+    // ignore: non_constant_identifier_names
     required this.wholesale_price,
     required this.instock,
     required this.discount,
+    // ignore: non_constant_identifier_names
     required this.amount_discount,
     required this.newProduct,
+    // ignore: non_constant_identifier_names
     required this.type_productID,
     required this.yearID,
     required this.modelID,

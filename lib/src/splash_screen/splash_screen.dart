@@ -4,13 +4,13 @@ import 'package:cammotor_new_version/src/screen/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../intro_screen/intro1.dart';
 
 class SplashPage extends StatefulWidget {
   // final VoidCallback onFinish;
   const SplashPage({super.key, });
 
   @override
+  // ignore: library_private_types_in_public_api
   _SplashPageState createState() => _SplashPageState();
 }
 
@@ -31,9 +31,11 @@ class _SplashPageState extends State<SplashPage> {
 
     if (token != null && token.isNotEmpty) {
       // User is logged in, navigate to HomePage
+      // ignore: use_build_context_synchronously
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
     } else {
       // User is not logged in, navigate to LoginScreen
+      // ignore: use_build_context_synchronously
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
     }
   }

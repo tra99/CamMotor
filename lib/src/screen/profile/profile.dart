@@ -4,7 +4,6 @@ import 'package:cammotor_new_version/src/screen/profile/edit_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../authentication/login.dart';
@@ -13,6 +12,7 @@ class ProfileInfoScreen extends StatefulWidget {
   const ProfileInfoScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ProfileInfoScreenState createState() => _ProfileInfoScreenState();
 }
 
@@ -184,9 +184,8 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
         centerTitle: true,
         actions: [
           TextButton(
-            // onPressed: updateProfileInfo,
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>const EditProfileScreen()));
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const EditProfileScreen()));
             },
             child: const Text(
               "កែប្រែ",
@@ -236,6 +235,7 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       await prefs.remove('token');
                       Navigator.pushReplacement(
+                        // ignore: use_build_context_synchronously
                         context,
                         MaterialPageRoute(builder: (context) => const LoginScreen()),
                       );

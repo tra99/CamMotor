@@ -14,7 +14,7 @@ import '../homepage.dart';
 import '../product/productscreen.dart';
 
 class OriginalScreen extends StatefulWidget {
-  const OriginalScreen({Key? key}) : super(key: key);
+  const OriginalScreen({super.key});
 
   @override
   State<OriginalScreen> createState() => _OriginalScreenState();
@@ -50,7 +50,7 @@ class _OriginalScreenState extends State<OriginalScreen> with AutomaticKeepAlive
     try {
       await provider.fetchStudentData(page, pageSize);
     } catch (e) {
-      print("Error: $e");
+      // print("Error: $e");
     }
   }
 
@@ -60,7 +60,7 @@ class _OriginalScreenState extends State<OriginalScreen> with AutomaticKeepAlive
     try {
       await provider.fetchInitialData();
     } catch (e) {
-      print("Error: $e");
+      // print("Error: $e");
     }
   }
 
@@ -299,7 +299,6 @@ class _OriginalScreenState extends State<OriginalScreen> with AutomaticKeepAlive
   }
 
   Future<void> _showYearDialog(BuildContext context, Model selectedModel) async {
-    bool dismissed = false;
 
     try {
       await showGeneralDialog(
@@ -308,9 +307,9 @@ class _OriginalScreenState extends State<OriginalScreen> with AutomaticKeepAlive
         barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
         barrierColor: Colors.black.withOpacity(0.5),
         pageBuilder: (context, animation1, animation2) {
+          // ignore: deprecated_member_use
           return WillPopScope(
             onWillPop: () async {
-              dismissed = true;
               Navigator.of(context).pop();
               return false;
             },
@@ -325,16 +324,16 @@ class _OriginalScreenState extends State<OriginalScreen> with AutomaticKeepAlive
                   future: fetchDataYearModel(selectedModel.id),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CustomLoadingWidget();
+                      return const CustomLoadingWidget();
                     } else if (snapshot.hasError) {
                         return Container(
                           alignment: Alignment.center,
-                          child: Column(
+                          child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               CustomLoadingWidget1(),
-                              const SizedBox(height: 20),
-                              const Text('Checking connection...'),
+                              SizedBox(height: 20),
+                              Text('Checking connection...'),
                             ],
                           ),
                         );
@@ -398,7 +397,7 @@ class _OriginalScreenState extends State<OriginalScreen> with AutomaticKeepAlive
         },
       );
     } catch (e) {
-      print('Error creating dialog: $e');
+      // print('Error creating dialog: $e');
     }
   }
 }

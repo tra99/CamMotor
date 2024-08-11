@@ -24,7 +24,7 @@ class SubCategoryService {
       final subCategoryList = List<Map<String, dynamic>>.from(
         responseData["students"]["data"],
       );
-      print(responseData);
+      // print(responseData);
       return subCategoryList.map((subCategoryJson) => SubCategoryModel.fromJson(subCategoryJson)).toList();
     } else {
       throw Exception("Failed to load subcategory data");

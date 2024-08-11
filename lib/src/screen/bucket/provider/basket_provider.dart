@@ -6,7 +6,7 @@ import 'dart:convert';
 
 class BasketProvider with ChangeNotifier {
   List<Map<String, dynamic>> _basketItems = [];
-  Map<int, bool> _checkedItems = {};
+  final Map<int, bool> _checkedItems = {};
   String? _orderId;
 
   List<Map<String, dynamic>> get basketItems => _basketItems;
@@ -29,12 +29,6 @@ class BasketProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _storeOrderId(String orderId) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('orderId', orderId);
-    _orderId = orderId;
-    notifyListeners();
-  }
 
   Future<void> addItemToBasket(Map<String, dynamic> item) async {
     final prefs = await SharedPreferences.getInstance();
@@ -50,7 +44,6 @@ class BasketProvider with ChangeNotifier {
 
   Future<void> removeBasketItem(int index) async {
     final prefs = await SharedPreferences.getInstance();
-    final itemToRemove = _basketItems[index];
     _basketItems.removeAt(index);
 
     final updatedBasketStringList = _basketItems.map((item) {
@@ -103,7 +96,9 @@ class BasketProvider with ChangeNotifier {
     _basketCountController.sink.add(_basketCount);
   }
 
+  @override
   void dispose() {
+    super.dispose();
     _basketCountController.close();
   }
 }

@@ -24,9 +24,6 @@ class _ClogoState extends State<Clogo> {
             return Text('Error: ${snapshot.error}');
           } else {
             final List<CompanyLogo> companyLogos = snapshot.data!;
-            companyLogos.forEach((companyLogo) {
-              print('Icons URL for ${companyLogo.nameCompany}: ${companyLogo.image}');
-            });
             return ListView.builder(
               itemCount: companyLogos.length,
               itemBuilder: (context, index) {

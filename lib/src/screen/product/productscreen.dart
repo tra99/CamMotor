@@ -2,21 +2,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cammotor_new_version/src/model/category.dart';
 import 'package:cammotor_new_version/src/model/sub_category.dart';
 import 'package:flutter/material.dart';
-import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import '../../components/loading.dart';
-import '../../model/real_product.dart';
 import '../../providers/sub_categ.dart';
 import '../../services/category.dart';
-import '../../services/real_product.dart';
 import '../../services/sub_category.dart';
 import 'real_product.dart';
 
 class ProductScreen extends StatefulWidget {
   final int yearID;
 
-  const ProductScreen({Key? key, required this.yearID}) : super(key: key);
+  const ProductScreen({super.key, required this.yearID});
 
   @override
   State<ProductScreen> createState() => _ProductScreenState();
@@ -81,7 +78,7 @@ class _ProductScreenState extends State<ProductScreen> with AutomaticKeepAliveCl
       try {
         await provider.fetchInitialData(yearID);
       } catch (e) {
-        print("Error: $e");
+        // print("Error: $e");
       }
   }
 
@@ -98,7 +95,9 @@ class _ProductScreenState extends State<ProductScreen> with AutomaticKeepAliveCl
 
     super.build(context);
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         title: const Text('ប្រភេទទំនិញ'),
         backgroundColor: const Color.fromARGB(255, 217, 217, 217),
         centerTitle: true,
@@ -138,7 +137,7 @@ class _ProductScreenState extends State<ProductScreen> with AutomaticKeepAliveCl
                             color: (selectedCategoryIndex == index) ? Colors.blue : Colors.black,
                           ),
                         ),
-                        SizedBox(width: 5),
+                        const SizedBox(width: 5),
                         Container(
                           height: 2,
                           width: 40, 
@@ -204,7 +203,7 @@ class _ProductScreenState extends State<ProductScreen> with AutomaticKeepAliveCl
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
-                              return Center(
+                              return const Center(
                                 child: CustomLoadingWidget1(),
                               );
                             },
@@ -212,19 +211,20 @@ class _ProductScreenState extends State<ProductScreen> with AutomaticKeepAliveCl
 
                           try {
                             // Fetch RealProductModel data using the selected subcategory ID
-                            List<RealProductModel> products = await RealProductService().fetchProductData(1, 10, subCategoryId);
                             
                             Navigator.of(context, rootNavigator: true).pop();
 
                             Navigator.push(
+                              // ignore: use_build_context_synchronously
                               context,
                               MaterialPageRoute(
                                 builder: (context) => RealProduct(subcategoryID: subCategoryId),
                               ),
                             );
                           } catch (error) {
+                            // ignore: use_build_context_synchronously
                             Navigator.of(context, rootNavigator: true).pop();
-                            print("Error fetching data: $error");
+                            // print("Error fetching data: $error");
                           }
                         },
                         child: Card(

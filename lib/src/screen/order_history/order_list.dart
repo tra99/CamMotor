@@ -10,6 +10,7 @@ class OrderCard extends StatefulWidget {
   const OrderCard({super.key, required this.order});
 
   @override
+  // ignore: library_private_types_in_public_api
   _OrderCardState createState() => _OrderCardState();
 }
 
@@ -34,7 +35,7 @@ class _OrderCardState extends State<OrderCard> {
         orderItems = items;
       });
     } catch (e) {
-      print('Error: $e');
+      // print('Error: $e');
     } finally {
       setState(() {
         isLoading = false;

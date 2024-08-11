@@ -1,5 +1,6 @@
 class AddToCardModel {
   final int id;
+  // ignore: non_constant_identifier_names
   final int quantity_order;
   final int total;
   final int orderID;
@@ -8,6 +9,7 @@ class AddToCardModel {
 
   AddToCardModel({
     required this.id,
+    // ignore: non_constant_identifier_names
     required this.quantity_order,
     required this.total,
     required this.orderID,

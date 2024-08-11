@@ -21,14 +21,15 @@ Future<void> logout(BuildContext context) async {
         await prefs.remove('token');
 
         Navigator.pushReplacement(
+          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(builder: (context) => const LoginScreen()),
         );
       } else {
-        print('Failed to logout from the server: ${response.statusCode}');
+        // print('Failed to logout from the server: ${response.statusCode}');
       }
     } catch (error) {
-      print('Error during logout request: $error');
+      // print('Error during logout request: $error');
     }
   }
 }

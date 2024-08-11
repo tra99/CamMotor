@@ -27,7 +27,7 @@ class SubCategoryProvider extends ChangeNotifier {
       }
     } catch (e) {
       // Handle error
-      print("Error: $e");
+      // print("Error: $e");
     } finally {
       isLoading = false;
       notifyListeners();
@@ -47,7 +47,7 @@ class SubCategoryProvider extends ChangeNotifier {
     } catch (e) {
       // Handle error
       error = "Failed to fetch initial data. Please try again."; // Provide a user-friendly error message
-      print("Error: $e");
+      // print("Error: $e");
     } finally {
       isLoading = false;
       notifyListeners();
