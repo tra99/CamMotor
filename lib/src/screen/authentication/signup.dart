@@ -5,8 +5,8 @@ import 'package:cammotor_new_version/src/screen/authentication/forgetpss.dart';
 import 'package:cammotor_new_version/src/screen/authentication/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../components/widget.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -19,11 +19,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final formKey = GlobalKey<FormState>();
   String email = "";
   String password = "";
-  String username="";
-  
-  final TextEditingController _usernameController=TextEditingController();
-  final TextEditingController _gmailController=TextEditingController();
-  final TextEditingController _passwordController=TextEditingController();
+  String username = "";
+  String phoneNumber = "";
+
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _gmailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
+
+  final textInputDecoration = InputDecoration(
+    labelStyle: const TextStyle(color: Colors.white),
+    errorStyle: const TextStyle(color: Colors.red, fontSize: 16),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(color: Colors.white),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(color: Colors.white, width: 2.0),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(color: Colors.orange, width: 2.0),
+    ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(color: Colors.red, width: 2.0),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(color: Colors.orange, width: 2.0),
+    ),
+    filled: true,
+    fillColor: Colors.transparent,
+  );
 
   void _showSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -39,38 +68,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  Future<void> _signIn() async{
-    final String username=_usernameController.text;
-    final String gmail=_gmailController.text;
-    final String password=_passwordController.text;
+  Future<void> _signIn() async {
+    final String username = _usernameController.text;
+    final String gmail = _gmailController.text;
+    final String password = _passwordController.text;
+    final String phoneNumber = _phoneNumberController.text;
 
-    final response=await http.post(
-      // Uri.parse('http://143.198.217.4:1026/api/auth/register'),
+    final response = await http.post(
       Uri.parse('${dotenv.env['BASE_URL']}/auth/register'),
       body: {
-        'name':username,
-        'email':gmail,
-        'password':password,
-        'password_confirmation':password
-      }
+        'name': username,
+        'email': gmail,
+        'password': password,
+        'password_confirmation': password,
+        'phone_number': phoneNumber,
+      },
     );
-    // sign success
-    if(response.statusCode==200){
-      final responseData=json.decode(response.body);
-      final token=responseData['token'];
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      final token = responseData['token'];
 
-      // store token in local
-      SharedPreferences prefs=await SharedPreferences.getInstance();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', token);
-    }
-    else{
-      // final err=jsonDecode(response.body)['message'];
-      // print(err);
+    } else {
+      // Handle error
     }
   }
 
-  Future<String?>_getToken() async{
-    SharedPreferences prefs=await SharedPreferences.getInstance();
+  Future<String?> _getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('token');
   }
 
@@ -79,10 +105,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.initState();
     _checkToken();
   }
-  Future<void>_checkToken()async{
-    final token=await _getToken();
-    if(token!=null){
-      // Navigator.push(context, MaterialPageRoute(builder: (context)=>const HomePage()));
+
+  Future<void> _checkToken() async {
+    final token = await _getToken();
+    if (token != null) {
+      // Navigate to home page or dashboard
     }
   }
 
@@ -107,31 +134,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
           SingleChildScrollView(
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.only(left:10.0,right: 10),
+                padding: const EdgeInsets.only(left: 10.0, right: 10),
                 child: Form(
                   key: formKey,
                   child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.center,
-                    // crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const Image(image: AssetImage("assets/images/logo3.png")),
                       TextFormField(
                         controller: _usernameController,
                         decoration: textInputDecoration.copyWith(
-                          labelText: "ឈ្មោះអ្នកប្រើប្រាស់", 
-                          labelStyle: const TextStyle(color: Colors.white),
+                          labelText: "ឈ្មោះអ្នកប្រើប្រាស់",
                         ),
                         style: const TextStyle(color: Colors.white),
                         onChanged: (value) {
                           setState(() {
-                            username = value; 
+                            username = value;
                           });
                         },
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return "សូមបញ្ចូលឈ្មោះអ្នករបស់អ្នក"; 
+                            return "សូមបញ្ចូលឈ្មោះអ្នករបស់អ្នក";
                           }
-                          
                           return null;
                         },
                       ),
@@ -140,8 +163,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         controller: _gmailController,
                         decoration: textInputDecoration.copyWith(
                           labelText: "អុីម៉ែល",
-                          labelStyle: const TextStyle(color: Colors.white),
-                          // Add more decoration options as needed
                         ),
                         style: const TextStyle(color: Colors.white),
                         onChanged: (value) {
@@ -159,12 +180,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
+                        controller: _phoneNumberController,
+                        decoration: textInputDecoration.copyWith(
+                          labelText: "លេខទូរស័ព្ទ",
+                        ),
+                        style: const TextStyle(color: Colors.white),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            phoneNumber = value;
+                          });
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "សូមបញ្ចូលលេខទូរស័ព្ទ";
+                          }
+                          if (!RegExp(r'^0\d{8,9}$').hasMatch(value)) {
+                            return "លេខទូរស័ព្ទត្រូវចាប់ផ្តើមដោយលេខ 0 ហើយមាន 9 ឬ 10 ខ្ទង់";
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      TextFormField(
                         controller: _passwordController,
                         obscureText: true,
                         decoration: textInputDecoration.copyWith(
                           labelText: "លេខសំងាត់",
-                          labelStyle: const TextStyle(color: Colors.white),
-                          // Add more decoration options as needed
                         ),
                         style: const TextStyle(color: Colors.white),
                         validator: (value) {
@@ -206,8 +251,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           )
                         ],
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.04,),
-                    SizedBox(
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.04,
+                      ),
+                      SizedBox(
                         width: double.infinity,
                         height: 60,
                         child: ElevatedButton(
@@ -239,40 +286,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           child: const Text(
                             'បង្កើតគណនី',
-                            style: TextStyle(
-                                color: Colors.white, fontSize: 24),
+                            style: TextStyle(color: Colors.white, fontSize: 24),
                           ),
                         ),
                       ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.02,),
-                    Text.rich(
-                      TextSpan(
-                        text: "មានគណនីរួចហើយមែនទេ? ​​",
-                        style: const TextStyle(
-                          color: Color.fromARGB(255, 234, 232, 234),
-                          fontSize: 20,
-                        ),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: "ចូលគណនី",
-                            style: const TextStyle(
-                              color: Color.fromARGB(255, 234, 232, 234),
-                              fontWeight: FontWeight.w600,
-                              decoration: TextDecoration.underline,
-                              decorationColor: Colors.white,
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.02,
+                      ),
+                      Text.rich(
+                        TextSpan(
+                          text: "មានគណនីរួចហើយមែនទេ? ​​",
+                          style: const TextStyle(
+                            color: Color.fromARGB(255, 234, 232, 234),
+                            fontSize: 20,
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: "ចូលគណនី",
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 234, 232, 234),
+                                fontWeight: FontWeight.w600,
+                                decoration: TextDecoration.underline,
+                                decorationColor: Colors.white,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => const LoginScreen(),
+                                    ),
+                                  );
+                                },
                             ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => const LoginScreen(),
-                                  ),
-                                );
-                              },
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
                     ],
                   ),
                 ),

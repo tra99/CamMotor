@@ -3,6 +3,7 @@ import 'package:cammotor_new_version/src/providers/pagination.dart';
 import 'package:cammotor_new_version/src/providers/real_product.dart';
 import 'package:cammotor_new_version/src/providers/sub_categ.dart';
 import 'package:cammotor_new_version/src/providers/user.dart';
+import 'package:cammotor_new_version/src/screen/authentication/signup.dart';
 import 'package:cammotor_new_version/src/screen/bucket/provider/basket_provider.dart';
 import 'package:cammotor_new_version/src/services/property.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +64,7 @@ class MyApp extends StatelessWidget {
       // home: isLoggedIn ? const HomePage() : (showIntroScreen ?  const SplashPage() : const LoginScreen()),
       // home: RealProduct(subcategoryID: 13,),
       // home:  ProfileInfoScreen(),
-      home:  const SplashPage(),
+      home:  const SignUpScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

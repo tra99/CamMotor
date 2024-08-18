@@ -82,7 +82,7 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
 
             _controllerName.text = name!;
             _controllerEmail.text = email!;
-            _controllerPhone.text = responseData['test']['telephone'] ?? '';
+            _controllerPhone.text = responseData['test']['phone_number'] ?? '';
             _controllerDob.text = responseData['test']['dateOfbirth'] ?? '';
             _controllerUserType.text = responseData['test']['type_userID']?.toString() ?? '';
             _controllerBalance.text = responseData['test']['main_balance']?.toString() ?? '';
@@ -98,7 +98,7 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
     }
   }
 
-    String formatDate(DateTime? date) {
+  String formatDate(DateTime? date) {
     if (date == null) {
       return '';
     }
@@ -221,11 +221,12 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
                 const Padding(padding: EdgeInsets.all(10.0), child: Divider()),
                 CustomCard(labelText: 'ទឹកប្រាក់តុល្យភាព', initialText: '$mainBalance'),
                 const Padding(padding: EdgeInsets.all(10.0), child: Divider()),
+                CustomCard(labelText: 'លេខទូរស័ព្ទ', initialText: _controllerPhone.text),
+                const Padding(padding: EdgeInsets.all(10.0), child: Divider()),
                 CustomCard(
                   labelText: 'ថ្ងៃខែឆ្នាំកំណើត',
                   initialText: dob != null ? formatDate(dob) : 'មិនមានទិន្នន័យ',
                 ),
-        
                 const SizedBox(height: 60),
                 SizedBox(
                   width: 200,
