@@ -46,6 +46,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   String? dob;
   int? telephone;
   File? _imageFile;
+  bool _isLoading = false; // Loading state variable
 
   void clearImage() {
     setState(() {
@@ -79,7 +80,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
-        // print('Response Data: $responseData');
 
         setState(() {
           name = responseData['test']['name'] ?? '';
@@ -102,10 +102,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               : null;
         });
       } else {
-        // print('Failed to fetch user info');
+        // Handle failed fetch
       }
     } else {
-      // print('Authentication token not found');
+      // Handle missing authentication token
     }
   }
 
@@ -206,7 +206,37 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
+  void _showImageRequiredDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text("កែប្រែបរាជ័យ",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
+          content: const Text("សូមបញ្ចូលរូបភាព",style: TextStyle(fontWeight: FontWeight.w600,),),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("យល់ព្រម",style: TextStyle(color: Colors.green),),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> updateProfileInfo() async {
+    if (_imageFile == null && _image == null) {
+      _showImageRequiredDialog();
+      return;
+    }
+
+    setState(() {
+      _isLoading = true; // Show loading indicator
+    });
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? authToken = prefs.getString('token');
 
@@ -217,29 +247,30 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
       request.headers['Authorization'] = 'Bearer $authToken';
 
-      // Adding the ID field as text
       request.fields['id'] = id.toString();
-
-      // Adding other text fields
       request.fields['name'] = _controller1.text.isNotEmpty ? _controller1.text : name!;
       request.fields['main_balance'] = _controller7.text.isNotEmpty ? _controller7.text : mainBalance.toString();
-      request.fields['phone_number'] = _controller3.text.isNotEmpty ? _controller3.text : telephone?.toString() ?? '';
+      
+      // Ensure the phone number starts with '0'
+      String phoneNumber = _controller3.text.isNotEmpty
+          ? _controller3.text
+          : telephone?.toString() ?? '';
+      if (!phoneNumber.startsWith('0')) {
+        phoneNumber = '0$phoneNumber';
+      }
+      request.fields['phone_number'] = phoneNumber;
+      
       request.fields['dateOfbirth'] = _controller4.text.isNotEmpty ? _controller4.text : dob!;
 
-      // Handling the profile image file
       if (_imageFile != null) {
         request.files.add(await http.MultipartFile.fromPath(
           'profile',
           _imageFile!.path,
         ));
-      } else {
-        ByteData byteData = await rootBundle.load('assets/images/f1.png');
-        _image = byteData.buffer.asUint8List();
-
+      } else if (_image != null) {
         final tempDir = await getTemporaryDirectory();
         final file = await File('${tempDir.path}/default_profile.png').create();
         file.writeAsBytesSync(_image!);
-
         request.files.add(await http.MultipartFile.fromPath(
           'profile',
           file.path,
@@ -250,22 +281,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         final response = await request.send();
         final responseBody = await response.stream.bytesToString();
 
+        // Debugging output
+        // print('Response status: ${response.statusCode}');
+        // print('Response body: $responseBody');
+
         if (response.statusCode == 200) {
           final Map<String, dynamic> responseData = jsonDecode(responseBody);
           if (responseData.containsKey('message')) {
-            // String backendMessage = responseData['message'];
             _showSuccessDialog();
-            // print('Server message: $backendMessage');
-          } else {
-            // print('Profile updated successfully');
           }
         } else {
+          // Log the error message returned by the server
           final Map<String, dynamic> responseData = jsonDecode(responseBody);
           if (responseData.containsKey('error')) {
-            // String errorMessage = responseData['error']['profile'] ?? 'Unknown error';
-            // print('Error: $errorMessage');
-          } else {
-            // print('Failed to update profile. Status code: ${response.statusCode}');
+            // print('Error: ${responseData['error']}');
           }
         }
       } catch (error) {
@@ -274,6 +303,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     } else {
       // print('Authentication token not found');
     }
+
+    setState(() {
+      _isLoading = false; // Hide loading indicator
+    });
   }
 
   @override
@@ -325,7 +358,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             CustomCard(
               onTap: () {},
               controller: _controller3,
-              initialText: 'លេខទូរស័ព្ទ: ${telephone ?? 'សូមបញ្ចូលលេខទូរស័ព្ទ'}',
+              initialText: 'លេខទូរស័ព្ទ: 0${telephone?.toString().padLeft(9, '0') ?? 'សូមបញ្ចូលលេខទូរស័ព្ទ'}',
             ),
             const SizedBox(height: 16),
             CustomCard(
@@ -347,7 +380,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               width: 200,
               height: 60,
               child: TextButton(
-                onPressed: () {
+                onPressed: _isLoading ? null : () {
                   updateProfileInfo();
                 },
                 style: TextButton.styleFrom(
@@ -364,14 +397,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     fontStyle: FontStyle.italic,
                   ),
                 ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.save_alt_rounded, size: 24),
-                    SizedBox(width: 10,),
-                    Text("រក្សាទុក"),
-                  ],
-                ),
+                child: _isLoading 
+                  ? const CircularProgressIndicator(
+                      color: Colors.white,
+                    ) 
+                  : const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.save_alt_rounded, size: 24),
+                        SizedBox(width: 10,),
+                        Text("រក្សាទុក"),
+                      ],
+                    ),
               ),
             ),
           ],

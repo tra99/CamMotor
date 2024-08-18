@@ -219,7 +219,7 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
                 const Padding(padding: EdgeInsets.all(10.0), child: Divider()),
                 CustomCard(labelText: 'អ៊ីម៉ែល', initialText: '$email'),
                 const Padding(padding: EdgeInsets.all(10.0), child: Divider()),
-                CustomCard(labelText: 'ទឹកប្រាក់តុល្យភាព', initialText: '$mainBalance'),
+                CustomCard(labelText: 'ទឹកប្រាក់តុល្យភាព', initialText: '$mainBalance \$'),
                 const Padding(padding: EdgeInsets.all(10.0), child: Divider()),
                 CustomCard(labelText: 'លេខទូរស័ព្ទ', initialText: _controllerPhone.text),
                 const Padding(padding: EdgeInsets.all(10.0), child: Divider()),
