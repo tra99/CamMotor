@@ -8,60 +8,70 @@ class TeachScreen extends StatefulWidget {
 }
 
 class _TeachScreenState extends State<TeachScreen> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 214, 231, 255),
       appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 217, 217, 217),
-          centerTitle: true,
-          title: Image.asset(
-            'assets/images/logo3.png',
-            width: 200,
-          ),
-          actions: [
-            GestureDetector(
-                onTap: () {
-                  // code here
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: Container(
-                    width: 50,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white, width: 3.0),
-                      shape: BoxShape.circle,
-                      image: const DecorationImage(
-                        image: AssetImage('assets/images/profile.jpg'),
-                      ),
-                    ),
-                  ),
-                ))
-          ]),
-      body: SingleChildScrollView(
-        child: Container(
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.3),
-                spreadRadius: 5,
-                blurRadius: 5,
-                offset: const Offset(0, 3)
-              )
-            ]
-          ),
-          child: const ClipRRect(
-            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20.0),bottomRight: Radius.circular(20.0)),
-            child: Column(
-              children: [
-                Image(
-                  image: AssetImage('assets/images/cover3.png'),
-                  height: 120,
-                  width: double.infinity,
-                  fit: BoxFit.cover, 
-                ),
-              ],
+        title: Image.asset(
+              "assets/images/logo3.png",
+              width: 140,
             ),
-          ),
+        backgroundColor: const Color.fromARGB(255, 0, 137, 249),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        centerTitle: false, 
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              height: 50,
+              color: const Color.fromARGB(255, 36, 87, 197),
+              child: const Center(
+                  child: Text(
+                'វីដេអូបង្រៀន',
+                style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold
+                  ),
+              )),
+            ),
+            const SizedBox(height: 40,),
+            Padding(
+              padding: const EdgeInsets.only(left: 50,right: 50),
+              child: Container(
+                width: double.infinity,
+                height: 170,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3), 
+                    ),
+                  ],
+                ),
+                child: const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.info_rounded,color: Color.fromARGB(255, 36, 87, 197),size: 46,),
+                    Text('មកដល់ឆាប់ៗ...',style: TextStyle(color: Color.fromARGB(255, 36, 87, 197),fontSize: 20),)
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

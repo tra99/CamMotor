@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 
-class RepairScreen extends StatefulWidget {
-  const RepairScreen({super.key});
+class SaleScreen extends StatelessWidget {
+  const SaleScreen({super.key});
 
-  @override
-  State<RepairScreen> createState() => _RepairScreenState();
-}
-
-class _RepairScreenState extends State<RepairScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +30,7 @@ class _RepairScreenState extends State<RepairScreen> {
               color: const Color.fromARGB(255, 36, 87, 197),
               child: const Center(
                   child: Text(
-                'ទីតាំងជួសជុល',
+                'ការលក់',
                 style: TextStyle(
                     fontSize: 20,
                     color: Colors.white,

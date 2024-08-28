@@ -14,7 +14,7 @@ class SelectCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.grey.shade300,
+      color: Colors.white,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
