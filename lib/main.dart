@@ -3,17 +3,18 @@ import 'package:cammotor_new_version/src/providers/pagination.dart';
 import 'package:cammotor_new_version/src/providers/real_product.dart';
 import 'package:cammotor_new_version/src/providers/sub_categ.dart';
 import 'package:cammotor_new_version/src/providers/user.dart';
-import 'package:cammotor_new_version/src/screen/authentication/signup.dart';
 import 'package:cammotor_new_version/src/screen/bucket/provider/basket_provider.dart';
 import 'package:cammotor_new_version/src/screen/homepage.dart';
-import 'package:cammotor_new_version/src/screen/repair/repairscreen.dart';
+import 'package:cammotor_new_version/src/screen/order_history/bloc/order_bloc.dart';
+import 'package:cammotor_new_version/src/screen/order_history/order_page.dart';
 import 'package:cammotor_new_version/src/services/property.dart';
+import 'package:cammotor_new_version/src/splash_screen/splash_screen.dart';
+import 'package:cammotor_new_version/src/test/test_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'src/splash_screen/splash_screen.dart';
 
 
 void main() async {
@@ -22,7 +23,7 @@ void main() async {
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool? showIntroScreen = prefs.getBool('showIntroScreen');
-  String? token = prefs.getString('token'); // Retrieve token here
+  String? token = prefs.getString('token'); 
 
   if (showIntroScreen == null) {
     showIntroScreen = true;
@@ -37,7 +38,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SubCategoryProvider()),
         ChangeNotifierProvider(create: (_) => RealProductProvider()),
         ChangeNotifierProvider(create: (_) => BasketProvider()),
-        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider())
         // ChangeNotifierProvider(create: (_) => ImageProviderNotifier()),
       ],
       child: MyApp(token: token, showIntroScreen: showIntroScreen),
@@ -110,9 +111,3 @@ class _PropertyWidgetState extends State<PropertyWidget> {
     );
   }
 }
-
-
-
-
-
-

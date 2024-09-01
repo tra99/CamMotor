@@ -10,7 +10,6 @@ import '../../model/model_bike.dart';
 import '../../model/pagination.dart';
 import '../../services/company_logo.dart';
 import '../../services/year_model.dart';
-import '../homepage.dart';
 import '../product/productscreen.dart';
 
 class OriginalScreen extends StatefulWidget {
@@ -99,13 +98,13 @@ class _OriginalScreenState extends State<OriginalScreen> with AutomaticKeepAlive
           ],
         ),
         centerTitle: true,
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => const HomePage()));
-          },
-          child: const Icon(Icons.arrow_back_ios),
-        ),
+        // leading: GestureDetector(
+        //   onTap: () {
+        //     Navigator.push(
+        //         context, MaterialPageRoute(builder: (context) => const HomePage()));
+        //   },
+        //   child: const Icon(Icons.arrow_back_ios),
+        // ),
       ),
       body: FutureBuilder<List<CompanyLogo>>(
         future: fetchDataCompanyLogo(),

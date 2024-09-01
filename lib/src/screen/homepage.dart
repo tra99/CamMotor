@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'package:cammotor_new_version/src/screen/order_history/order_page.dart';
 import 'package:cammotor_new_version/src/screen/repair/repairscreen.dart';
 import 'package:cammotor_new_version/src/screen/sale/sale_screen.dart';
 import 'package:cammotor_new_version/src/screen/teach/teachscreenm.dart';
+import 'package:cammotor_new_version/src/test/test_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:cammotor_new_version/src/screen/profile/profile.dart';
 import 'package:flutter/material.dart';
@@ -71,6 +73,8 @@ class _HomePageState extends State<HomePage> {
   Future<int> _getUserId() async {
     final prefs = await SharedPreferences.getInstance();
     final storedId = prefs.getString('id') ?? '0';
+    final userId = int.tryParse(storedId) ?? 0;
+    print('UserID: $userId');
     return int.tryParse(storedId) ?? 0;
   }
 
@@ -204,10 +208,11 @@ class _HomePageState extends State<HomePage> {
                           } else if (index == 1) {
                             Navigator.push(context, MaterialPageRoute(builder: (context)=>const RepairScreen()));
                           } else if (index == 2) {
-                            Future<void>.delayed(Duration.zero, () {
-                              // ignore: use_build_context_synchronously
-                              displayBottomSheet(context);
-                            });
+                            // Future<void>.delayed(Duration.zero, () {
+                            //   // ignore: use_build_context_synchronously
+                            //   displayBottomSheet(context);
+                            // });
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestProductScreen()));
                           } else if (index == 3) {
                              Navigator.push(context, MaterialPageRoute(builder: (context)=>const SaleScreen()));
                           }
@@ -273,12 +278,13 @@ class _HomePageState extends State<HomePage> {
                   return const Center(child: Text('មិនមានបញ្ជាទិញ'));
                 } else {
                   final orders = snapshot.data!;
-                  return ListView.builder(
-                    itemCount: orders.length,
-                    itemBuilder: (context, index) {
-                      return OrderCard(order: orders[index]);
-                    },
-                  );
+                  return const OrderPage();
+                  // ListView.builder(
+                  //   itemCount: orders.length,
+                  //   itemBuilder: (context, index) {
+                  //     return OrderCard(order: orders[index]);
+                  //   },
+                  // );
                 }
               },
             );
@@ -467,6 +473,9 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   children: [
                     GestureDetector(
+                      onTap: () {
+                        _getUserId();
+                      },
                       child: const Icon(
                         Icons.info_rounded,
                         color: Colors.white,
