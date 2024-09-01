@@ -77,15 +77,21 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
             email = responseData['test']['email'] ?? '';
             userId = responseData['test']['id'];
             dob = DateTime.tryParse(responseData['test']['dateOfbirth'] ?? '');
-            mainBalance = int.tryParse(responseData['test']['main_balance'].toString()) ?? 0;
-            typeUserId = int.tryParse(responseData['test']['type_userID'].toString()) ?? 0;
+            mainBalance =
+                int.tryParse(responseData['test']['main_balance'].toString()) ??
+                    0;
+            typeUserId =
+                int.tryParse(responseData['test']['type_userID'].toString()) ??
+                    0;
 
             _controllerName.text = name!;
             _controllerEmail.text = email!;
             _controllerPhone.text = responseData['test']['phone_number'] ?? '';
             _controllerDob.text = responseData['test']['dateOfbirth'] ?? '';
-            _controllerUserType.text = responseData['test']['type_userID']?.toString() ?? '';
-            _controllerBalance.text = responseData['test']['main_balance']?.toString() ?? '';
+            _controllerUserType.text =
+                responseData['test']['type_userID']?.toString() ?? '';
+            _controllerBalance.text =
+                responseData['test']['main_balance']?.toString() ?? '';
 
             _serverImage = responseData['test']['profile'] ?? '';
           });
@@ -165,7 +171,8 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
     if (_image != null) {
       imageProvider = MemoryImage(_image!);
     } else if (_serverImage != null && _serverImage!.isNotEmpty) {
-      imageProvider = NetworkImage("${dotenv.env['BASE_URL']}/storage/$_serverImage");
+      imageProvider =
+          NetworkImage("${dotenv.env['BASE_URL']}/storage/$_serverImage");
     } else {
       imageProvider = const AssetImage("assets/images/f1.png");
     }
@@ -185,11 +192,15 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const EditProfileScreen()));
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const EditProfileScreen()));
             },
             child: const Text(
               "កែប្រែ",
-              style: TextStyle(color: Colors.red, fontSize: 18, fontWeight: FontWeight.w700),
+              style: TextStyle(
+                  color: Colors.red, fontSize: 18, fontWeight: FontWeight.w700),
             ),
           )
         ],
@@ -206,7 +217,8 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
                 SizedBox(height: MediaQuery.of(context).size.height * 0.06),
                 Container(
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: const Color.fromARGB(255, 26, 21, 19)),
+                    border: Border.all(
+                        width: 2, color: const Color.fromARGB(255, 26, 21, 19)),
                     borderRadius: BorderRadius.circular(64),
                   ),
                   child: CircleAvatar(
@@ -215,13 +227,18 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
                   ),
                 ),
                 const SizedBox(height: 25),
-                CustomCard(labelText: 'ឈ្មោះអ្នកប្រើប្រាស់', initialText: '$name'),
+                CustomCard(
+                    labelText: 'ឈ្មោះអ្នកប្រើប្រាស់', initialText: '$name'),
                 const Padding(padding: EdgeInsets.all(10.0), child: Divider()),
                 CustomCard(labelText: 'អ៊ីម៉ែល', initialText: '$email'),
                 const Padding(padding: EdgeInsets.all(10.0), child: Divider()),
-                CustomCard(labelText: 'ទឹកប្រាក់តុល្យភាព', initialText: '$mainBalance \$'),
+                CustomCard(
+                    labelText: 'ទឹកប្រាក់តុល្យភាព',
+                    initialText: '$mainBalance \$'),
                 const Padding(padding: EdgeInsets.all(10.0), child: Divider()),
-                CustomCard(labelText: 'លេខទូរស័ព្ទ', initialText: _controllerPhone.text),
+                CustomCard(
+                    labelText: 'លេខទូរស័ព្ទ',
+                    initialText: _controllerPhone.text),
                 const Padding(padding: EdgeInsets.all(10.0), child: Divider()),
                 CustomCard(
                   labelText: 'ថ្ងៃខែឆ្នាំកំណើត',
@@ -233,13 +250,61 @@ class _ProfileInfoScreenState extends State<ProfileInfoScreen> {
                   height: 60,
                   child: TextButton(
                     onPressed: () async {
-                      SharedPreferences prefs = await SharedPreferences.getInstance();
-                      await prefs.remove('token');
-                      Navigator.pushReplacement(
-                        // ignore: use_build_context_synchronously
-                        context,
-                        MaterialPageRoute(builder: (context) => const LoginScreen()),
+                      bool? confirmLogout = await showDialog<bool>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            backgroundColor: Colors.white,
+                            title: const Text(
+                              'ចាកចេញ',
+                              style: TextStyle(fontWeight: FontWeight.w800),
+                            ),
+                            content: const Text('តើអ្នកប្រាកដជាចង់ចាកចេញឬ?'),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text(
+                                  'ទេ',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w800),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop(false);
+                                },
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: const Color.fromARGB(255, 36, 87, 197),
+                                ),
+                                child: TextButton(
+                                  child: const Text(
+                                    'បាទ/ចាស',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(true);
+                                  },
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       );
+
+                      if (confirmLogout == true) {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        await prefs.remove('token');
+                        // ignore: use_build_context_synchronously
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginScreen()),
+                        );
+                      }
                     },
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.white,
@@ -279,7 +344,13 @@ class CustomCard extends StatelessWidget {
   final IconData? icon;
   final IconData? clearIcon;
   final VoidCallback? onClear;
-  const CustomCard({super.key,required this.initialText,required this.labelText, this.icon, this.clearIcon, this.onClear});
+  const CustomCard(
+      {super.key,
+      required this.initialText,
+      required this.labelText,
+      this.icon,
+      this.clearIcon,
+      this.onClear});
 
   @override
   Widget build(BuildContext context) {
@@ -288,10 +359,18 @@ class CustomCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(labelText,style: const TextStyle(color: Colors.grey,fontWeight: FontWeight.w500,fontSize: 16),),
+          Text(
+            labelText,
+            style: const TextStyle(
+                color: Colors.grey, fontWeight: FontWeight.w500, fontSize: 16),
+          ),
           Row(
             children: [
-              Text(initialText,style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w500),),
+              Text(
+                initialText,
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              ),
               Icon(icon)
             ],
           )
