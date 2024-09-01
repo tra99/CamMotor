@@ -20,9 +20,11 @@ class Order {
   final int resourceID;
   final String description;
   final String price;
+  final int quantity;
 
   Order({
     required this.orderID,
+    required this.quantity,
     this.paymentID,
     required this.total,
     required this.price,
@@ -48,6 +50,7 @@ class Order {
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
       orderID: json['orderID'],
+      quantity: json['quantity_order'],
       price: json['price'],
       total: json['total'],
       paymentID: json['paymentID'],

@@ -1,5 +1,6 @@
 import 'package:cammotor_new_version/src/model/order_model.dart';
 import 'package:cammotor_new_version/src/screen/order_history/bloc/order_bloc.dart';
+import 'package:cammotor_new_version/src/screen/order_history/ui/view_detail_product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -58,19 +59,20 @@ class _OrderPageState extends State<OrderPage> {
             } else if (state is OrderLoaded) {
               return Column(
                 children: [
-                   Container(
+                  Container(
                     width: double.infinity,
                     height: 50,
                     color: const Color.fromARGB(255, 36, 87, 197),
                     child: const Center(
-                        child: Text(
-                      'ប្រវត្តិការកម្មង់',
-                      style: TextStyle(
+                      child: Text(
+                        'ប្រវត្តិការកម្មង់',
+                        style: TextStyle(
                           fontSize: 20,
                           color: Colors.white,
-                          fontWeight: FontWeight.bold
+                          fontWeight: FontWeight.bold,
                         ),
-                    )),
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 10,),
                   Expanded(
@@ -80,41 +82,44 @@ class _OrderPageState extends State<OrderPage> {
                         final orderId = state.orders.keys.elementAt(index);
                         final orderList = state.orders[orderId]!;
 
-                        double orderTotal = 0;
+                        double totalOrderPrice = 0.0;
+                        int totalQuantity = 0;
+
                         for (var order in orderList) {
                           double price = double.tryParse(order.price) ?? 0.0;
-                          orderTotal += order.total * price;
+                          totalOrderPrice += price * order.quantity;
+                          totalQuantity += order.quantity;
                         }
+
                         String updatedAt = orderList.isNotEmpty ? orderList[0].updatedAt : '';
                         String formatDate(String dateStr) {
-                        DateTime date = DateTime.parse(dateStr);
-                        String day = DateFormat('dd').format(date);
-                        String year = DateFormat('yyyy').format(date);
+                          DateTime date = DateTime.parse(dateStr);
+                          String day = DateFormat('dd').format(date);
+                          String year = DateFormat('yyyy').format(date);
 
-                        Map<String, String> khmerMonths = {
-                          'January': 'មករា',
-                          'February': 'កុម្ភៈ',
-                          'March': 'មីនា',
-                          'April': 'មេសា',
-                          'May': 'ឧសភា',
-                          'June': 'មិថុនា',
-                          'July': 'កក្កដា',
-                          'August': 'សីហា',
-                          'September': 'កញ្ញា',
-                          'October': 'តុលា',
-                          'November': 'វិច្ឆិកា',
-                          'December': 'ធ្នូ',
-                        };
+                          Map<String, String> khmerMonths = {
+                            'January': 'មករា',
+                            'February': 'កុម្ភៈ',
+                            'March': 'មីនា',
+                            'April': 'មេសា',
+                            'May': 'ឧសភា',
+                            'June': 'មិថុនា',
+                            'July': 'កក្កដា',
+                            'August': 'សីហា',
+                            'September': 'កញ្ញា',
+                            'October': 'តុលា',
+                            'November': 'វិច្ឆិកា',
+                            'December': 'ធ្នូ',
+                          };
 
-                        String monthInEnglish = DateFormat('MMMM').format(date);
-                        String monthInKhmer = khmerMonths[monthInEnglish] ?? monthInEnglish;
+                          String monthInEnglish = DateFormat('MMMM').format(date);
+                          String monthInKhmer = khmerMonths[monthInEnglish] ?? monthInEnglish;
 
-                        return '$day/$monthInKhmer/$year';
-                      }
-
+                          return '$day/$monthInKhmer/$year';
+                        }
 
                         return Padding(
-                          padding: const EdgeInsets.symmetric( horizontal: 8.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: InkWell(
                             onTap: () {
                               Navigator.push(
@@ -165,11 +170,18 @@ class _OrderPageState extends State<OrderPage> {
                                         fontSize: 16,
                                       ),
                                     ),
+                                    Text(
+                                      'ចំនួនសរុប: $totalQuantity',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          'តម្លៃសរុប: \$${orderTotal.toStringAsFixed(2)}',
+                                          'តម្លៃសរុប: \$${totalOrderPrice.toStringAsFixed(2)}',
                                           style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
@@ -191,7 +203,7 @@ class _OrderPageState extends State<OrderPage> {
                                           ),
                                         ),
                                       ],
-                                    )
+                                    ),
                                   ],
                                 ),
                               ),
@@ -209,61 +221,6 @@ class _OrderPageState extends State<OrderPage> {
               return const Center(child: Text('No orders loaded'));
             }
           },
-        ),
-      ),
-    );
-
-  }
-}
-
-class OrderDetailsScreen extends StatelessWidget {
-  final List<Order> orderList;
-
-  const OrderDetailsScreen({super.key, required this.orderList});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Order Details'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: orderList.map((order) {
-              double price = double.tryParse(order.price) ?? 0.0;
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Row(
-                  children: [
-                    Image.network(
-                      '${dotenv.env['BASE_URL']}/storage/${order.image}',
-                      width: 80,
-                      height: 80,
-                      fit: BoxFit.cover,
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Name: ${order.name}',
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 5),
-                          Text('Quantity: x${order.total}'),
-                          Text('Price: \$${price.toStringAsFixed(2)}'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-          ),
         ),
       ),
     );

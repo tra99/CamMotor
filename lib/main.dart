@@ -6,7 +6,7 @@ import 'package:cammotor_new_version/src/providers/user.dart';
 import 'package:cammotor_new_version/src/screen/bucket/provider/basket_provider.dart';
 import 'package:cammotor_new_version/src/screen/homepage.dart';
 import 'package:cammotor_new_version/src/screen/order_history/bloc/order_bloc.dart';
-import 'package:cammotor_new_version/src/screen/order_history/order_page.dart';
+import 'package:cammotor_new_version/src/screen/order_history/ui/order_page.dart';
 import 'package:cammotor_new_version/src/services/property.dart';
 import 'package:cammotor_new_version/src/splash_screen/splash_screen.dart';
 import 'package:cammotor_new_version/src/test/test_screen.dart';
