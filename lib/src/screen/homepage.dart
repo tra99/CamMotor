@@ -16,7 +16,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../components/card/card_custom.dart';
 import '../providers/bottom_sheet.dart';
 import '../services/store_basket.dart';
-import 'order_history/order_list.dart';
 import 'package:carousel_slider/carousel_controller.dart' as custom;
 
 class HomePage extends StatefulWidget {
@@ -59,8 +58,8 @@ class _HomePageState extends State<HomePage> {
         name: 'វីឌីអូបង្រៀន', image: AssetImage('assets/images/teaching.png')),
     Choices(
         name: 'ទីតាំងជួសជុល', image: AssetImage('assets/images/location.png')),
-    Choices(name: 'ទំនិញ', image: AssetImage('assets/images/product.png')),
-    Choices(name: 'ការលក់', image: AssetImage('assets/images/buy_sale.png')),
+    Choices(name: 'គ្រៀងបន្លាស់', image: AssetImage('assets/images/product.png')),
+    Choices(name: 'ទិញលក់', image: AssetImage('assets/images/buy_sale.png')),
   ];
 
   List<String> text2 = [
@@ -73,20 +72,18 @@ class _HomePageState extends State<HomePage> {
   Future<int> _getUserId() async {
     final prefs = await SharedPreferences.getInstance();
     final storedId = prefs.getString('id') ?? '0';
-    final userId = int.tryParse(storedId) ?? 0;
-    print('UserID: $userId');
+    // final userId = int.tryParse(storedId) ?? 0;
+    // print('UserID: $userId');
     return int.tryParse(storedId) ?? 0;
   }
 
+  final Uri _url = Uri.parse('https://t.me/cammoto_part');
   Future<void> _launchTelegram() async {
-    final Uri telegramUri = Uri.parse('https://t.me/cammoto_part'); 
-
-    if (await canLaunchUrl(telegramUri)) {
-      await launchUrl(telegramUri, mode: LaunchMode.externalApplication);
-    } else {
-      throw 'Could not launch $telegramUri';
+    if (!await launchUrl(_url)) {
+    throw Exception('Could not launch $_url');
     }
   }
+
 
   Future<void> _launchPhoneCall(String phoneNumber) async {
     final Uri phoneUri = Uri.parse('tel:$phoneNumber');
@@ -189,14 +186,14 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Expanded(
-            flex: 2,
+            flex: 1,
             child: Padding(
-              padding: const EdgeInsets.only(right: 8,left: 8,top: 20),
+              padding: const EdgeInsets.only(right: 8,left: 8,top: 10),
               child: Container(
                 alignment: Alignment.center,
                 child: Center(
                   child: GridView.count(
-                    childAspectRatio: 12 / 8,
+                    childAspectRatio: 12 / 9.5,
                     crossAxisSpacing: 2,
                     crossAxisCount: 2,
                     mainAxisSpacing: 4,
@@ -241,7 +238,7 @@ class _HomePageState extends State<HomePage> {
               // Image.asset('assets/images/promotion.png',
               //     width: double.infinity),
               Padding(
-                padding: const EdgeInsets.only(left: 10,right: 10,),
+                padding: const EdgeInsets.only(left: 10,right: 10,bottom: 10),
                 child: Container(
                   width: double.infinity,
                   height: 120,
@@ -319,7 +316,7 @@ class _HomePageState extends State<HomePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset('assets/images/TelegramApp.png'),
+                      Image.asset('assets/images/telegram_icon.png',width: 50,),
                       const SizedBox(width: 10,),
                       const Text('012 99 42 44',style: TextStyle(color: Color.fromARGB(255, 0, 137, 249),fontSize: 24,fontWeight: FontWeight.bold),)
                     ],
@@ -340,7 +337,7 @@ class _HomePageState extends State<HomePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset('assets/images/phone_contact.png'),
+                      Image.asset('assets/images/call_icon.png',width: 50,),
                       const SizedBox(width: 10,),
                       const Text('012 99 42 44',style: TextStyle(color: Color.fromARGB(255, 0, 137, 249),fontSize: 24,fontWeight: FontWeight.bold),)
                     ],
@@ -427,7 +424,7 @@ class _HomePageState extends State<HomePage> {
       imageProvider =
           NetworkImage("${dotenv.env['BASE_URL']}/storage/$_serverImage");
     } else {
-      imageProvider = const AssetImage("assets/images/f1.png");
+      imageProvider = const AssetImage("assets/images/icon_profile_color.png");
     }
     // ignore: deprecated_member_use
     return WillPopScope(
@@ -471,6 +468,8 @@ class _HomePageState extends State<HomePage> {
               Container(
                 margin: const EdgeInsets.only(right: 12),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     GestureDetector(
                       onTap: () {
@@ -479,7 +478,7 @@ class _HomePageState extends State<HomePage> {
                       child: const Icon(
                         Icons.info_rounded,
                         color: Colors.white,
-                        size: 46,
+                        size: 40,
                       ),
                     ),
                     const SizedBox(
@@ -493,8 +492,13 @@ class _HomePageState extends State<HomePage> {
                                 builder: (context) =>
                                     const ProfileInfoScreen()));
                       },
-                      child: CircleAvatar(
-                        backgroundImage: imageProvider,
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50)
+                        ),
+                        child:  ClipRRect(borderRadius: BorderRadius.circular(40),child: Image(image: imageProvider,fit: BoxFit.cover,)),
                       ),
                     ),
                   ],

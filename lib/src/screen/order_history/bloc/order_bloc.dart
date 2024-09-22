@@ -9,11 +9,9 @@ part 'order_state.dart';
 
 class OrderBloc extends Bloc<OrderEvent, OrderState> {
   OrderBloc() : super(OrderInitial()) {
-    // Registering the event handler for FetchOrder
     on<FetchOrder>(_onFetchOrder);
   }
 
-  // Event handler for FetchOrder
   Future<void> _onFetchOrder(FetchOrder event, Emitter<OrderState> emit) async {
     emit(OrderLoading());
 

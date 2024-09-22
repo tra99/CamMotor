@@ -92,6 +92,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 5),
                                     Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         const Text(
                                           'កាលបរិច្ឆេទ:',
@@ -100,13 +101,15 @@ class OrderDetailsScreen extends StatelessWidget {
                                             fontSize: 16,
                                           ),
                                         ),
-                                        Text(
-                                          ' ${_formatDateTime(order.updatedAt)}',
-                                          style: const TextStyle(
-                                              color: Color.fromARGB(
-                                                  255, 130, 130, 130),
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500),
+                                        Expanded(
+                                          child: Text(
+                                            ' ${_formatDateTime(order.updatedAt)}',
+                                            style: const TextStyle(
+                                                color: Color.fromARGB(
+                                                    255, 130, 130, 130),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -119,7 +122,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 5),
                                     Text(
-                                      'Quantity: \$${price.toStringAsFixed(2)}',
+                                      'ចំនួន: ${order.quantity}',
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),

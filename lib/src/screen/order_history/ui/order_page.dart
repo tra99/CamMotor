@@ -1,4 +1,3 @@
-import 'package:cammotor_new_version/src/model/order_model.dart';
 import 'package:cammotor_new_version/src/screen/order_history/bloc/order_bloc.dart';
 import 'package:cammotor_new_version/src/screen/order_history/ui/view_detail_product.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +10,7 @@ class OrderPage extends StatefulWidget {
   const OrderPage({super.key});
 
   @override
-  _OrderPageState createState() => _OrderPageState();
+  State<OrderPage> createState() => _OrderPageState();
 }
 
 class _OrderPageState extends State<OrderPage> {
@@ -195,7 +194,7 @@ class _OrderPageState extends State<OrderPage> {
                                             borderRadius: BorderRadius.circular(12),
                                           ),
                                           child: const Text(
-                                            'Completed',
+                                            'ការកម្មង់បានជោគជ័យ',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold,
@@ -216,6 +215,7 @@ class _OrderPageState extends State<OrderPage> {
                 ],
               );
             } else if (state is OrderError) {
+              print( 'Error: ${state.message}');
               return Center(child: Text('Error: ${state.message}'));
             } else {
               return const Center(child: Text('No orders loaded'));

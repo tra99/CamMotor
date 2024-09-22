@@ -18,6 +18,7 @@ class SelectCard extends StatelessWidget {
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image(image: ch.image, width: 80),
             Text(
@@ -63,14 +64,14 @@ class SelectCardPopup extends StatelessWidget {
           ),
         ),
       ),
-      Positioned(
-        top: -20,
-        right: -20,
-        child: Image(
-          image: chs.image,
-          width: 100,
-        ),
-      )
+      // Positioned(
+      //   top: -20,
+      //   right: -20,
+      //   child: Image(
+      //     image: chs.image,
+      //     width: 100,
+      //   ),
+      // )
     ]);
   }
   
